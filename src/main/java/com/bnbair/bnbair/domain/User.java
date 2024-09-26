@@ -1,8 +1,10 @@
 package com.bnbair.bnbair.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -33,7 +35,11 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @JsonIgnore
     private String password;
+
 
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.NONE)
