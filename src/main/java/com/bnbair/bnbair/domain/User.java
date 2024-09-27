@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "user_table") // Must keep this name as 'user' is reserved in H2
 public class User {
 
     @Id
