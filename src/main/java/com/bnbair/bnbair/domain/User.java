@@ -1,10 +1,10 @@
 package com.bnbair.bnbair.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+//import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_table")
+@Table(name = "user_table") // Must keep this name as 'user' is reserved in H2
 public class User {
 
     @Id
@@ -35,10 +35,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
-    @JsonIgnore
-    private String password;
+//    @NotBlank(message = "Password is required")
+//    @Size(min = 8, message = "Password must be at least 8 characters long")
+//    @JsonIgnore
+//    private String password;
 
 
     @Column(nullable = false, updatable = false)
@@ -50,6 +50,14 @@ public class User {
 
     @Column
     private Float guestRating;
+
+    public User(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        ownerRating = null;
+        guestRating = null;
+    }
 
     @Override
     public String toString() {
