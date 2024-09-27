@@ -18,6 +18,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -31,6 +33,7 @@ public class Property {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User owner;
 
     @NotBlank(message = "Property name is required")

@@ -25,7 +25,7 @@ public class PropertyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Property> getPropertyById(Long id) throws PropertyNotFoundException {
+    public ResponseEntity<Property> getPropertyById(@PathVariable Long id) throws PropertyNotFoundException {
         Property property = propertyService.getPropertyById(id);
         return ResponseEntity.ok(property);
     }
