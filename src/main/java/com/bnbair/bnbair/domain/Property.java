@@ -25,7 +25,6 @@ public class Property {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
     private User owner;
 
     @NotBlank(message = "Property name is required")
