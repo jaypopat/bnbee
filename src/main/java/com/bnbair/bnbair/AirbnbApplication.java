@@ -1,9 +1,6 @@
 package com.bnbair.bnbair;
 
-import com.bnbair.bnbair.domain.AccommodationType;
-import com.bnbair.bnbair.domain.Booking;
-import com.bnbair.bnbair.domain.Property;
-import com.bnbair.bnbair.domain.User;
+import com.bnbair.bnbair.domain.*;
 import com.bnbair.bnbair.service.BookingService;
 import com.bnbair.bnbair.service.PropertyService;
 import com.bnbair.bnbair.service.ReviewService;
@@ -31,7 +28,7 @@ public class AirbnbApplication implements CommandLineRunner {
         this.userService = userService;
         this.propertyService = propertyService;
         this.bookingService = bookingService;
-        this.reviewService = reviewService; // Not added yet
+        this.reviewService = reviewService;
     }
 
     public static void main(String[] args) {
@@ -62,7 +59,10 @@ public class AirbnbApplication implements CommandLineRunner {
         bookingService.createBooking(booking1);
         bookingService.createBooking(booking2);
 
-        // TODO: Create seed for Reviews and Bookmarks
+        Review review1 = new Review(booking1, 10, "The best place1");
+//        Review review2 = new Review(booking2, 5, "This was mid");
+        reviewService.createReview(review1);
+//        reviewService.createReview(review2);
 
         for (User user: userService.getAllUsers()) {
             logger.info(user.toString());
@@ -80,6 +80,10 @@ public class AirbnbApplication implements CommandLineRunner {
         logger.info("Bookings made by Jay:");
         for (Booking booking : bookingService.getBookingsByBooker(user1)) {
             logger.info(booking.toString());
+        }
+
+        for (Review review: reviewService.getAllReviews()) {
+            logger.info(review.toString());
         }
     }
 }
