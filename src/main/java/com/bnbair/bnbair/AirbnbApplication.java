@@ -2,9 +2,11 @@ package com.bnbair.bnbair;
 
 import com.bnbair.bnbair.domain.AccommodationType;
 import com.bnbair.bnbair.domain.Booking;
+import com.bnbair.bnbair.domain.Bookmark;
 import com.bnbair.bnbair.domain.Property;
 import com.bnbair.bnbair.domain.User;
 import com.bnbair.bnbair.service.BookingService;
+import com.bnbair.bnbair.service.BookmarkService;
 import com.bnbair.bnbair.service.PropertyService;
 import com.bnbair.bnbair.service.ReviewService;
 import com.bnbair.bnbair.service.UserService;
@@ -24,14 +26,17 @@ public class AirbnbApplication implements CommandLineRunner {
     PropertyService propertyService;
     BookingService bookingService;
     ReviewService reviewService;
+    BookmarkService bookmarkService;
 
     private static final Logger logger = LoggerFactory.getLogger(AirbnbApplication.class);
 
-    public AirbnbApplication(UserService userService, PropertyService propertyService, BookingService bookingService, ReviewService reviewService) {
+    public AirbnbApplication(UserService userService, PropertyService propertyService, BookingService bookingService,
+            ReviewService reviewService, BookmarkService bookmarkService) {
         this.userService = userService;
         this.propertyService = propertyService;
         this.bookingService = bookingService;
         this.reviewService = reviewService; // Not added yet
+        this.bookmarkService = bookmarkService;
     }
 
     public static void main(String[] args) {
@@ -47,8 +52,11 @@ public class AirbnbApplication implements CommandLineRunner {
         userService.createUser(user1);
         userService.createUser(user2);
 
-        Property property1 = new Property(user1, "Pope House", "123 Milton Street", "Ireland", "The best house of them all", null, 30, AccommodationType.BARN);
-        Property property2 = new Property(user2, "Seashell Shack", "15 Salthill Rd.", "Ireland", "Welcome to the Seashell Shack, where the waves are our lullabies and the seagulls are our nosy neighbors. This cozy beach house is so close to the water, you’ll need a snorkel just to fetch the morning paper. Here’s what you can expect:", null, 100, AccommodationType.BEACH_HOUSE);
+        Property property1 = new Property(user1, "Pope House", "123 Milton Street", "Ireland",
+                "The best house of them all", null, 30, AccommodationType.BARN);
+        Property property2 = new Property(user2, "Seashell Shack", "15 Salthill Rd.", "Ireland",
+                "Welcome to the Seashell Shack, where the waves are our lullabies and the seagulls are our nosy neighbors. This cozy beach house is so close to the water, you’ll need a snorkel just to fetch the morning paper. Here’s what you can expect:",
+                null, 100, AccommodationType.BEACH_HOUSE);
         propertyService.createProperty(property1);
         propertyService.createProperty(property2);
 
@@ -58,22 +66,33 @@ public class AirbnbApplication implements CommandLineRunner {
         // Jay is booking a night at his Pope house for one day. 30 * 1 day = 30.0
         Booking booking1 = new Booking(user1, property1, today, tomorrow, 30.0f, 1);
         // Pat is staying at his beach house for 3 days
-        Booking booking2 = new Booking(user2, property2, today, tomorrow.plusDays(2), property1.getPricePerNight() * 3, 2);
+        Booking booking2 = new Booking(user2, property2, today, tomorrow.plusDays(2), property1.getPricePerNight() * 3,
+                2);
         bookingService.createBooking(booking1);
         bookingService.createBooking(booking2);
 
+        Bookmark bookmark1 = new Bookmark(user1, property1);
+        Bookmark bookmark2 = new Bookmark(user2, property2);
+
+        bookmarkService.createBookmark(bookmark1);
+        bookmarkService.createBookmark(bookmark2);
+
         // TODO: Create seed for Reviews and Bookmarks
 
-        for (User user: userService.getAllUsers()) {
+        for (User user : userService.getAllUsers()) {
             logger.info(user.toString());
         }
 
-        for (Property property: propertyService.getAllProperties()) {
+        for (Property property : propertyService.getAllProperties()) {
             logger.info(property.toString());
         }
 
-        for (Booking booking: bookingService.getAllBookings()) {
+        for (Booking booking : bookingService.getAllBookings()) {
             logger.info(booking.toString());
+        }
+
+        for (Bookmark bookmark : bookmarkService.getAllBookmarks()) {
+            logger.info(bookmark.toString());
         }
 
         // Get all bookings made by Jay

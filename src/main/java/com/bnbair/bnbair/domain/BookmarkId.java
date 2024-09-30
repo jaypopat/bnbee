@@ -15,10 +15,10 @@ import java.io.Serializable;
 @Embeddable
 public class BookmarkId implements Serializable {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Property property;
 
     public BookmarkId() {
@@ -27,5 +27,10 @@ public class BookmarkId implements Serializable {
     public BookmarkId(User user, Property property) {
         this.user = user;
         this.property = property;
+    }
+
+    @Override
+    public String toString() {
+        return "BookmarkId [user=" + user + ", property=" + property + "]";
     }
 }

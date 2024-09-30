@@ -13,9 +13,14 @@ import lombok.Setter;
 public class Bookmark {
 
     @EmbeddedId
-    private BookmarkId id;
+    private BookmarkId bookmarkId;
 
     public Bookmark(User user, Property property) {
-        this.id = new BookmarkId(user, property);
+        this.bookmarkId = new BookmarkId(user, property);
+    }
+
+    @Override
+    public String toString() {
+        return "Bookmark [bookmarkId=" + bookmarkId + ", getBookmarkId()=" + getBookmarkId() + "]";
     }
 }
