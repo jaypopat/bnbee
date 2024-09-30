@@ -6,13 +6,12 @@ import com.bnbair.bnbair.exception.ReviewNotFoundException;
 import com.bnbair.bnbair.exception.UserNotFoundException;
 import com.bnbair.bnbair.service.ReviewService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/api/reviews")
+@RestController
+@RequestMapping("/reviews")
 public class ReviewController {
   private final ReviewService reviewService;
 
@@ -26,7 +25,6 @@ public class ReviewController {
     return ResponseEntity.ok(reviews);
   }
 
-  // TODO
   @GetMapping("/users/{id}")
   public ResponseEntity<List<Review>> getReviewByUser(@PathVariable Long id) {
     List<Review> reviews;

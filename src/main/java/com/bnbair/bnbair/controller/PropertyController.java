@@ -9,7 +9,7 @@ import com.bnbair.bnbair.exception.PropertyNotFoundException;
 import com.bnbair.bnbair.service.PropertyService;
 
 @RestController
-@RequestMapping("api/properties")
+@RequestMapping("/properties")
 public class PropertyController {
 
     private final PropertyService propertyService;
