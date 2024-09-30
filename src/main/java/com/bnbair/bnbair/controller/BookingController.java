@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -37,8 +38,19 @@ public class BookingController {
         }
     }
 
-    // TODO: How to write an endpoint to access a user's or property's bookings?
-    // api/bookings/users/{id} or /api/users/{id}/bookings'
+    // get users bookings
+    @GetMapping("/users/{id}")
+    public ResponseEntity<List<Booking>> getUserBookings(@PathVariable Long id) {
+        List<Booking> bookings = bookingService.getUserBookings(id);
+        return ResponseEntity.ok(bookings);
+    }
+
+    // get property bookings
+    @GetMapping("/properties/{id}")
+    public ResponseEntity<List<Booking>> getPropertyBookings(@PathVariable Long id) {
+        List<Booking> bookings = bookingService.getPropertyBookings(id);
+        return ResponseEntity.ok(bookings);
+    }
 
     @PostMapping
     public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
@@ -57,5 +69,13 @@ public class BookingController {
     public ResponseEntity<Booking> deleteBooking(@PathVariable Long id) {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/properties/{propertyId}/between")
+    public ResponseEntity<List<Booking>> getBookingsForPropertyBetweenDates(
+            @PathVariable Long propertyId,
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+        List<Booking> bookings = bookingService.getBookingsForPropertyBetweenDates(propertyId, startDate, endDate);
+        return ResponseEntity.ok(bookings);
     }
 }

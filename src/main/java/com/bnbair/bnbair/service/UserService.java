@@ -46,4 +46,11 @@ public class UserService {
         User user = getUserById(id);
         userRepository.delete(user);
     }
+    public List<User> getUsersByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public List<User> getUsersByFirstAndLastName(String firstName, String lastName) {
+        return userRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+    }
 }
