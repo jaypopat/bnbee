@@ -11,6 +11,7 @@ import com.bnbair.bnbair.service.PropertyService;
 @RestController
 @RequestMapping("/properties")
 public class PropertyController {
+
     private final PropertyService propertyService;
 
     public PropertyController(PropertyService propertyService) {
