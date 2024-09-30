@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("api/users")
 public class UserController {
 
     private final UserService userService;
@@ -38,9 +38,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails) throws UserNotFoundException {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails)
+            throws UserNotFoundException {
         User updatedUser = userService.updateUser(id, userDetails);
         return ResponseEntity.ok(updatedUser);
     }

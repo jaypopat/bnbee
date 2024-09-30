@@ -2,11 +2,9 @@ package com.bnbair.bnbair;
 
 import com.bnbair.bnbair.domain.AccommodationType;
 import com.bnbair.bnbair.domain.Booking;
-import com.bnbair.bnbair.domain.Bookmark;
 import com.bnbair.bnbair.domain.Property;
 import com.bnbair.bnbair.domain.User;
 import com.bnbair.bnbair.service.BookingService;
-import com.bnbair.bnbair.service.BookmarkService;
 import com.bnbair.bnbair.service.PropertyService;
 import com.bnbair.bnbair.service.ReviewService;
 import com.bnbair.bnbair.service.UserService;
@@ -26,17 +24,15 @@ public class AirbnbApplication implements CommandLineRunner {
     PropertyService propertyService;
     BookingService bookingService;
     ReviewService reviewService;
-    BookmarkService bookmarkService;
 
     private static final Logger logger = LoggerFactory.getLogger(AirbnbApplication.class);
 
     public AirbnbApplication(UserService userService, PropertyService propertyService, BookingService bookingService,
-            ReviewService reviewService, BookmarkService bookmarkService) {
+            ReviewService reviewService) {
         this.userService = userService;
         this.propertyService = propertyService;
         this.bookingService = bookingService;
         this.reviewService = reviewService; // Not added yet
-        this.bookmarkService = bookmarkService;
     }
 
     public static void main(String[] args) {
@@ -71,12 +67,6 @@ public class AirbnbApplication implements CommandLineRunner {
         bookingService.createBooking(booking1);
         bookingService.createBooking(booking2);
 
-        Bookmark bookmark1 = new Bookmark(user1, property1);
-        Bookmark bookmark2 = new Bookmark(user2, property2);
-
-        bookmarkService.createBookmark(bookmark1);
-        bookmarkService.createBookmark(bookmark2);
-
         // TODO: Create seed for Reviews and Bookmarks
 
         for (User user : userService.getAllUsers()) {
@@ -89,10 +79,6 @@ public class AirbnbApplication implements CommandLineRunner {
 
         for (Booking booking : bookingService.getAllBookings()) {
             logger.info(booking.toString());
-        }
-
-        for (Bookmark bookmark : bookmarkService.getAllBookmarks()) {
-            logger.info(bookmark.toString());
         }
 
         // Get all bookings made by Jay

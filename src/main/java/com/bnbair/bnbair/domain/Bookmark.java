@@ -1,26 +1,26 @@
-package com.bnbair.bnbair.domain;
+// package com.bnbair.bnbair.domain;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+// import jakarta.persistence.EmbeddedId;
+// import jakarta.persistence.Entity;
+// import lombok.Getter;
+// import lombok.NoArgsConstructor;
+// import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@Entity
-public class Bookmark {
+// @Getter
+// @Setter
+// @NoArgsConstructor
+// @Entity
+// public class Bookmark {
 
-    @EmbeddedId
-    private BookmarkId bookmarkId;
+// @EmbeddedId
+// private BookmarkId id;
 
-    public Bookmark(User user, Property property) {
-        this.bookmarkId = new BookmarkId(user, property);
-    }
+// public Bookmark(User user, Property property) {
+// this.id = new BookmarkId(user, property);
+// }
 
-    @Override
-    public String toString() {
-        return "Bookmark [bookmarkId=" + bookmarkId + ", getBookmarkId()=" + getBookmarkId() + "]";
-    }
-}
+// @Override
+// public String toString() {
+// return "Bookmark [bookmarkId=" + id + ", getBookmarkId()=" + getId() + "]";
+// }
+// }
