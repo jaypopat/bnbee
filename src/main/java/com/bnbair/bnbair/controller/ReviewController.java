@@ -6,13 +6,11 @@ import com.bnbair.bnbair.exception.ReviewNotFoundException;
 import com.bnbair.bnbair.exception.UserNotFoundException;
 import com.bnbair.bnbair.service.ReviewService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/api/reviews")
+@RestController
 public class ReviewController {
   private final ReviewService reviewService;
 
@@ -20,14 +18,13 @@ public class ReviewController {
     this.reviewService = reviewService;
   }
 
-  @GetMapping
+  @GetMapping("/reviews")
   public ResponseEntity<List<Review>> getReviews() {
     List<Review> reviews = reviewService.getAllReviews();
     return ResponseEntity.ok(reviews);
   }
 
-  // TODO
-  @GetMapping("/users/{id}")
+  @GetMapping("reviews/users/{id}")
   public ResponseEntity<List<Review>> getReviewByUser(@PathVariable Long id) {
     List<Review> reviews;
     try {
@@ -38,7 +35,7 @@ public class ReviewController {
     return ResponseEntity.ok(reviews);
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("reviews/{id}")
   public ResponseEntity<Review> getReviewById(@PathVariable Long id) {
     try {
       Review review = reviewService.getReviewById(id);
@@ -48,7 +45,7 @@ public class ReviewController {
     }
   }
 
-  @PostMapping
+  @PostMapping("/reviews")
   public ResponseEntity<Review> createReview(@RequestBody ReviewDto reviewDto) {
     Review review = reviewService.createReview(reviewDto);
     // Return bad request if review was already created
@@ -58,7 +55,7 @@ public class ReviewController {
     return ResponseEntity.ok(reviewService.createReview(reviewDto));
   }
 
-  @PatchMapping("/{id}")
+  @PatchMapping("/reviews/{id}")
   public ResponseEntity<Review> updateReview(@PathVariable Long id, @RequestBody ReviewDto reviewDto) {
     try {
       Review updatedReview = reviewService.updateReview(id, reviewDto);
@@ -68,7 +65,7 @@ public class ReviewController {
     }
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/reviews/{id}")
   public ResponseEntity<Review> deleteReview(@PathVariable Long id) {
     reviewService.deleteReview(id);
     return ResponseEntity.noContent().build();
