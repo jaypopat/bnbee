@@ -50,4 +50,15 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> getUsersByFullNames(@RequestParam String firstName, @RequestParam String lastName) {
+        List<User> users = userService.getUsersByFirstAndLastName(firstName, lastName);
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/findByEmail")
+    public ResponseEntity<List<User>> findUsersByEmail(@RequestParam String email) {
+        List<User> users = userService.getUsersByEmail(email);
+        return ResponseEntity.ok(users);
+    }
 }
