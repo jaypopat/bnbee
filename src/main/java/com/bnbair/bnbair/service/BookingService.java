@@ -63,4 +63,15 @@ public class BookingService {
     public void deleteBooking(Long bookingId) {
         bookingRepository.deleteById(bookingId);
     }
+
+    public List<Booking> getUserBookings(Long id) {
+        return bookingRepository.findByBooker_Id(id);
+    }
+
+    public List<Booking> getPropertyBookings(Long id) {
+        return bookingRepository.findByProperty_Id(id);
+    }
+    public List<Booking> getBookingsForPropertyBetweenDates(Long propertyId, LocalDate startDate, LocalDate endDate) {
+        return bookingRepository.findByProperty_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(propertyId, startDate, endDate);
+    }
 }
