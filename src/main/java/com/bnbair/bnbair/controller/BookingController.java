@@ -6,14 +6,13 @@ import com.bnbair.bnbair.domain.BookingStatus;
 import com.bnbair.bnbair.exception.BookingNotFoundException;
 import com.bnbair.bnbair.service.BookingService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Controller
-@RequestMapping("api/bookings")
+@RestController
+@RequestMapping("/bookings")
 public class BookingController {
     private final BookingService bookingService;
 
