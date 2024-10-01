@@ -23,12 +23,10 @@ public class ReviewService {
   private final BookingService bookingService;
 
   private static final Logger logger = LoggerFactory.getLogger(AirbnbApplication.class);
-  private final UserRepository userRepository;
 
-  public ReviewService(ReviewRepository reviewRepository, BookingService bookingService, UserRepository userRepository) {
+  public ReviewService(ReviewRepository reviewRepository, BookingService bookingService) {
     this.reviewRepository = reviewRepository;
     this.bookingService = bookingService;
-    this.userRepository = userRepository;
   }
 
   public List<Review> getAllReviews() {
@@ -38,12 +36,6 @@ public class ReviewService {
   public Review getReviewById(Long id) throws ReviewNotFoundException {
     return reviewRepository.findById(id)
             .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
-  }
-
-  public List<Review> getReviewsByReviewerId(Long id) throws UserNotFoundException {
-    User user = userRepository.findById(id)
-            .orElseThrow(() -> new UserNotFoundException("User not found"));
-    return reviewRepository.findAllByReviewer(user);
   }
 
   public Review createReview(ReviewDto reviewDto) {

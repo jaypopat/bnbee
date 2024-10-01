@@ -28,10 +28,6 @@ public class BookingService {
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
     }
 
-    public List<Booking> getBookingsByBooker(User user) {
-        return bookingRepository.findByBooker(user);
-    }
-
     public Booking createBooking(Booking booking) {
         return bookingRepository.save(booking);
     }
@@ -64,14 +60,7 @@ public class BookingService {
         bookingRepository.deleteById(bookingId);
     }
 
-    public List<Booking> getUserBookings(Long id) {
-        return bookingRepository.findByBooker_Id(id);
-    }
-
-    public List<Booking> getPropertyBookings(Long id) {
-        return bookingRepository.findByProperty_Id(id);
-    }
     public List<Booking> getBookingsForPropertyBetweenDates(Long propertyId, LocalDate startDate, LocalDate endDate) {
-        return bookingRepository.findByProperty_IdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(propertyId, startDate, endDate);
+        return bookingRepository.findByPropertyIdBetween(propertyId, startDate, endDate);
     }
 }

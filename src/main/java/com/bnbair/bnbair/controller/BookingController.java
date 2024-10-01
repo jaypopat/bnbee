@@ -5,6 +5,7 @@ import com.bnbair.bnbair.domain.BookingDto;
 import com.bnbair.bnbair.domain.BookingStatus;
 import com.bnbair.bnbair.exception.BookingNotFoundException;
 import com.bnbair.bnbair.service.BookingService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@Controller
-@RequestMapping("api/bookings")
+@RestController
+@RequestMapping("/bookings")
 public class BookingController {
     private final BookingService bookingService;
 
@@ -38,20 +39,6 @@ public class BookingController {
         }
     }
 
-    // get users bookings
-    @GetMapping("/users/{id}")
-    public ResponseEntity<List<Booking>> getUserBookings(@PathVariable Long id) {
-        List<Booking> bookings = bookingService.getUserBookings(id);
-        return ResponseEntity.ok(bookings);
-    }
-
-    // get property bookings
-    @GetMapping("/properties/{id}")
-    public ResponseEntity<List<Booking>> getPropertyBookings(@PathVariable Long id) {
-        List<Booking> bookings = bookingService.getPropertyBookings(id);
-        return ResponseEntity.ok(bookings);
-    }
-
     @PostMapping
     public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
         booking.setStatus(BookingStatus.PENDING);
@@ -73,8 +60,8 @@ public class BookingController {
     @GetMapping("/properties/{propertyId}/between")
     public ResponseEntity<List<Booking>> getBookingsForPropertyBetweenDates(
             @PathVariable Long propertyId,
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
+            @RequestParam @DateTimeFormat(pattern = "ddMMyyyy") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "ddMMyyyy") LocalDate endDate) {
         List<Booking> bookings = bookingService.getBookingsForPropertyBetweenDates(propertyId, startDate, endDate);
         return ResponseEntity.ok(bookings);
     }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -52,6 +53,12 @@ public class Property {
 
     @Enumerated(EnumType.STRING)
     private AccommodationType type;
+
+    @OneToMany(mappedBy = "property")
+    private List<Booking> bookings;
+
+    @OneToMany(mappedBy = "property")
+    private List<Review> reviews;
 
     public Property(User owner, String name, String address, String country, String description, Float rating,
             float pricePerNight, AccommodationType type) {

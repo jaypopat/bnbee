@@ -1,6 +1,7 @@
 package com.bnbair.bnbair;
 
 import com.bnbair.bnbair.domain.*;
+import com.bnbair.bnbair.repository.UserRepository;
 import com.bnbair.bnbair.service.BookingService;
 import com.bnbair.bnbair.service.PropertyService;
 import com.bnbair.bnbair.service.ReviewService;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 
 @SpringBootApplication
 public class AirbnbApplication implements CommandLineRunner {
+    private final UserRepository userRepository;
     UserService userService;
     PropertyService propertyService;
     BookingService bookingService;
@@ -25,11 +27,12 @@ public class AirbnbApplication implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(AirbnbApplication.class);
 
     public AirbnbApplication(UserService userService, PropertyService propertyService, BookingService bookingService,
-            ReviewService reviewService) {
+                             ReviewService reviewService, UserRepository userRepository) {
         this.userService = userService;
         this.propertyService = propertyService;
         this.bookingService = bookingService;
         this.reviewService = reviewService;
+        this.userRepository = userRepository;
     }
 
     public static void main(String[] args) {
@@ -78,12 +81,6 @@ public class AirbnbApplication implements CommandLineRunner {
         }
 
         for (Booking booking : bookingService.getAllBookings()) {
-            logger.info(booking.toString());
-        }
-
-        // Get all bookings made by Jay
-        logger.info("Bookings made by Jay:");
-        for (Booking booking : bookingService.getBookingsByBooker(user1)) {
             logger.info(booking.toString());
         }
 
