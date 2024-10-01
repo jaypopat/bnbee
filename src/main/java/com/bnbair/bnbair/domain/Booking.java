@@ -24,6 +24,9 @@ public class Booking {
   @ManyToOne(fetch = FetchType.EAGER)
   private Property property;
 
+  @OneToOne(cascade = CascadeType.ALL, mappedBy = "booking")
+  private Review review;
+
   private LocalDate startDate, endDate;
   private float paymentAmount;
   private int headCount;

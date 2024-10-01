@@ -1,5 +1,6 @@
 package com.bnbair.bnbair.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -54,9 +55,11 @@ public class Property {
     @Enumerated(EnumType.STRING)
     private AccommodationType type;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "property")
     private List<Booking> bookings;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "property")
     private List<Review> reviews;
 
