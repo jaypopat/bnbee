@@ -25,6 +25,14 @@ public class PropertyService {
                 .orElseThrow(() -> new PropertyNotFoundException("Property not found with id: " + id));
     }
 
+    public List<Property> getPropertyByCountry(String country) {
+        return propertyRepository.findByCountry(country);
+    }
+
+    public List<Property> getPropertyByPriceBetween(float low, float high) {
+        return propertyRepository.findPropertyByPriceBetween(low, high);
+    }
+
     public Property createProperty(Property property) {
         return propertyRepository.save(property);
     }
@@ -40,7 +48,6 @@ public class PropertyService {
         property.setRating(propertyDetails.getRating());
         property.setType(propertyDetails.getType());
         property.setDescription(propertyDetails.getDescription());
-
         return propertyRepository.save(property);
     }
 
