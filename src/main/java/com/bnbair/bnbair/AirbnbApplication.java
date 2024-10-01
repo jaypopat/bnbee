@@ -25,7 +25,7 @@ public class AirbnbApplication implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(AirbnbApplication.class);
 
     public AirbnbApplication(UserService userService, PropertyService propertyService, BookingService bookingService,
-            ReviewService reviewService) {
+                             ReviewService reviewService) {
         this.userService = userService;
         this.propertyService = propertyService;
         this.bookingService = bookingService;
@@ -78,12 +78,6 @@ public class AirbnbApplication implements CommandLineRunner {
         }
 
         for (Booking booking : bookingService.getAllBookings()) {
-            logger.info(booking.toString());
-        }
-
-        // Get all bookings made by Jay
-        logger.info("Bookings made by Jay:");
-        for (Booking booking : bookingService.getBookingsByBooker(user1)) {
             logger.info(booking.toString());
         }
 

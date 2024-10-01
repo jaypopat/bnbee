@@ -25,17 +25,6 @@ public class ReviewController {
     return ResponseEntity.ok(reviews);
   }
 
-  @GetMapping("/users/{id}")
-  public ResponseEntity<List<Review>> getReviewByUser(@PathVariable Long id) {
-    List<Review> reviews;
-    try {
-      reviews = reviewService.getReviewsByReviewerId(id);
-    } catch (UserNotFoundException e) {
-      return ResponseEntity.notFound().build();
-    }
-    return ResponseEntity.ok(reviews);
-  }
-
   @GetMapping("/{id}")
   public ResponseEntity<Review> getReviewById(@PathVariable Long id) {
     try {
