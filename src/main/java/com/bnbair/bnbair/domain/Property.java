@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-
 @Setter
 @Getter
 @NoArgsConstructor
@@ -49,12 +48,13 @@ public class Property {
 
     @Column(nullable = false, updatable = false)
     @Setter(value = AccessLevel.NONE)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     private AccommodationType type;
 
-    public Property(User owner, String name, String address, String country, String description, Float rating, float pricePerNight, AccommodationType type) {
+    public Property(User owner, String name, String address, String country, String description, Float rating,
+            float pricePerNight, AccommodationType type) {
         this.owner = owner;
         this.name = name;
         this.address = address;
@@ -63,13 +63,14 @@ public class Property {
         this.rating = rating;
         this.pricePerNight = pricePerNight;
         this.type = type;
+        this.createdAt = LocalDateTime.now();
     }
 
     @Override
     public String toString() {
         return "Property{" +
                 "id=" + id +
-                ", owner=" + owner.getId()+
+                ", owner=" + owner.getId() +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", country='" + country + '\'' +
