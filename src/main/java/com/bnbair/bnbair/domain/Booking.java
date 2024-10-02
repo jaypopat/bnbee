@@ -1,10 +1,8 @@
 package com.bnbair.bnbair.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -24,6 +22,7 @@ public class Booking {
   @ManyToOne(fetch = FetchType.EAGER)
   private Property property;
 
+  @JsonIgnore
   @OneToOne(cascade = CascadeType.ALL, mappedBy = "booking")
   private Review review;
 
@@ -32,7 +31,7 @@ public class Booking {
   private int headCount;
 
   @Enumerated(EnumType.STRING)
-  private BookingStatus status;
+  private BookingStatus status = BookingStatus.PENDING;
 
 
   public Booking(User booker, Property property, LocalDate startDate, LocalDate endDate, float paymentAmount, int headCount) {
@@ -42,7 +41,6 @@ public class Booking {
     this.endDate = endDate;
     this.paymentAmount = paymentAmount;
     this.headCount = headCount;
-    this.status = BookingStatus.PENDING;
   }
 
   @Override
