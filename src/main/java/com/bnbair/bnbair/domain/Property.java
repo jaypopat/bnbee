@@ -50,7 +50,7 @@ public class Property {
 
     @Column(nullable = false, updatable = false)
     @Setter(value = AccessLevel.NONE)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     private AccommodationType type;
@@ -73,7 +73,6 @@ public class Property {
         this.rating = rating;
         this.pricePerNight = pricePerNight;
         this.type = type;
-        this.createdAt = LocalDateTime.now();
     }
 
     @Override
