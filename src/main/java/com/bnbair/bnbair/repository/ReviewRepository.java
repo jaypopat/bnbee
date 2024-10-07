@@ -5,9 +5,11 @@ import com.bnbair.bnbair.domain.Review;
 import com.bnbair.bnbair.domain.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
+@RepositoryRestResource(exported = false)
 public interface ReviewRepository extends CrudRepository<Review, Long> {
   List<Review> findAllByReviewer(User user);
 

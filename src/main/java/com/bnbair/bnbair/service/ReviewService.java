@@ -1,15 +1,11 @@
 package com.bnbair.bnbair.service;
 
-import com.bnbair.bnbair.AirbnbApplication;
 import com.bnbair.bnbair.domain.Booking;
 import com.bnbair.bnbair.domain.Review;
 import com.bnbair.bnbair.domain.ReviewDto;
-import com.bnbair.bnbair.domain.User;
 import com.bnbair.bnbair.exception.BookingNotFoundException;
 import com.bnbair.bnbair.exception.ReviewNotFoundException;
-import com.bnbair.bnbair.exception.UserNotFoundException;
 import com.bnbair.bnbair.repository.ReviewRepository;
-import com.bnbair.bnbair.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,7 +18,7 @@ public class ReviewService {
   private final ReviewRepository reviewRepository;
   private final BookingService bookingService;
 
-  private static final Logger logger = LoggerFactory.getLogger(AirbnbApplication.class);
+  private static final Logger logger = LoggerFactory.getLogger(ReviewService.class);
 
   public ReviewService(ReviewRepository reviewRepository, BookingService bookingService) {
     this.reviewRepository = reviewRepository;
@@ -38,21 +34,26 @@ public class ReviewService {
             .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
   }
 
+  public List<Review> getAllReviewsWithScoreBetween(int start, int end) {
+    return reviewRepository.findAllByScoreBetween(start, end);
+  }
+
   public Review createReview(ReviewDto reviewDto) {
     try {
       Booking reviewBooking = bookingService.getBookingById(reviewDto.getBookingId());
       Review review = new Review(reviewBooking, reviewDto.getScore(), reviewDto.getMessage());
       return reviewRepository.save(review);
-    } catch (BookingNotFoundException e) {
-      throw e;
     } catch (DataIntegrityViolationException e) {
       logger.error("Review already exists");
+      return null;
+    } catch (BookingNotFoundException e) {
+      logger.error("Booking not found");
       return null;
     }
   }
 
-  public Review createReview(Review review) {
-    return reviewRepository.save(review);
+  public void createReview(Review review) {
+    reviewRepository.save(review);
   }
 
   public Review updateReview(Long id, ReviewDto reviewDto) throws ReviewNotFoundException {

@@ -31,7 +31,7 @@ public class Booking {
   private int headCount;
 
   @Enumerated(EnumType.STRING)
-  private BookingStatus status = BookingStatus.PENDING;
+  private BookingStatus status;
 
 
   public Booking(User booker, Property property, LocalDate startDate, LocalDate endDate, float paymentAmount, int headCount) {
@@ -41,6 +41,7 @@ public class Booking {
     this.endDate = endDate;
     this.paymentAmount = paymentAmount;
     this.headCount = headCount;
+    this.status = BookingStatus.PENDING;
   }
 
   @Override

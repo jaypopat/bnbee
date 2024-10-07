@@ -3,7 +3,6 @@ package com.bnbair.bnbair.controller;
 import com.bnbair.bnbair.domain.Review;
 import com.bnbair.bnbair.domain.ReviewDto;
 import com.bnbair.bnbair.exception.ReviewNotFoundException;
-import com.bnbair.bnbair.exception.UserNotFoundException;
 import com.bnbair.bnbair.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/api/reviews")
 public class ReviewController {
   private final ReviewService reviewService;
 
@@ -35,6 +34,11 @@ public class ReviewController {
     }
   }
 
+  @GetMapping("/search/findAllByScoreBetween")
+  public ResponseEntity<List<Review>> findAllByScoreBetween(@RequestParam int start, @RequestParam int end) {
+      return ResponseEntity.ok(reviewService.getAllReviewsWithScoreBetween(start, end));
+  }
+
   @PostMapping
   public ResponseEntity<Review> createReview(@RequestBody ReviewDto reviewDto) {
     Review review = reviewService.createReview(reviewDto);
@@ -42,7 +46,8 @@ public class ReviewController {
     if (review == null) {
       return ResponseEntity.badRequest().build();
     }
-    return ResponseEntity.ok(reviewService.createReview(reviewDto));
+
+    return ResponseEntity.ok(review);
   }
 
   @PatchMapping("/{id}")

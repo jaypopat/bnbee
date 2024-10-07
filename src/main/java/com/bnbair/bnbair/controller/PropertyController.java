@@ -1,5 +1,6 @@
 package com.bnbair.bnbair.controller;
 
+import com.bnbair.bnbair.domain.Review;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -9,7 +10,7 @@ import com.bnbair.bnbair.exception.PropertyNotFoundException;
 import com.bnbair.bnbair.service.PropertyService;
 
 @RestController
-@RequestMapping("/properties")
+@RequestMapping("/api/properties")
 public class PropertyController {
 
     private final PropertyService propertyService;
@@ -28,6 +29,17 @@ public class PropertyController {
     public ResponseEntity<Property> getPropertyById(@PathVariable Long id) throws PropertyNotFoundException {
         Property property = propertyService.getPropertyById(id);
         return ResponseEntity.ok(property);
+    }
+
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<List<Review>> getPropertyReviews(@PathVariable Long id) {
+        try {
+            Property property = propertyService.getPropertyById(id);
+            List<Review> reviews = property.getReviews();
+            return ResponseEntity.ok(reviews);
+        } catch (PropertyNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
