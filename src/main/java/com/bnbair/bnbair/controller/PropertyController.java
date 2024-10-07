@@ -42,6 +42,19 @@ public class PropertyController {
         }
     }
 
+    @GetMapping("/search/findByCountry")
+    public ResponseEntity<List<Property>> getPropertiesByCountry(@RequestParam String country) {
+        List<Property> properties = propertyService.getPropertyByCountry(country);
+        return ResponseEntity.ok(properties);
+    }
+
+    @GetMapping("/search/findByPriceBetween")
+    public ResponseEntity<List<Property>> getPropertiesByPriceBetween(@RequestParam float low,
+            @RequestParam float high) {
+        List<Property> properties = propertyService.getPropertyByPriceBetween(low, high);
+        return ResponseEntity.ok(properties);
+    }
+
     @PostMapping
     public ResponseEntity<Property> createProperty(@RequestBody Property property) {
         Property createdProperty = propertyService.createProperty(property);
