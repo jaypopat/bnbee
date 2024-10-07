@@ -7,14 +7,13 @@ import com.bnbair.bnbair.exception.BookingNotFoundException;
 import com.bnbair.bnbair.service.BookingService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bookings")
+@RequestMapping("/api/bookings")
 public class BookingController {
     private final BookingService bookingService;
 
@@ -22,7 +21,6 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    // This endpoint is unrealistic
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
@@ -39,11 +37,26 @@ public class BookingController {
         }
     }
 
+    @GetMapping("/search/findByStatus")
+    public ResponseEntity<List<Booking>> getBookingsByStatus(@RequestParam String status) {
+        try {
+            BookingStatus bookingStatus = BookingStatus.valueOf(status);
+            List<Booking> bookings = bookingService.getAllBookingsWithStatus(bookingStatus);
+            return ResponseEntity.ok(bookings);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        booking.setStatus(BookingStatus.PENDING);
-        Booking newBooking = bookingService.createBooking(booking);
-        return ResponseEntity.ok(newBooking);
+    public ResponseEntity<Booking> createBooking(@RequestBody BookingDto bookingDto) {
+        try {
+            Booking newBooking = bookingService.createBooking(bookingDto);
+            return ResponseEntity.ok(newBooking);
+        } catch (Exception e) {
+            // TODO: Return more specific error messages
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PatchMapping("/{id}")

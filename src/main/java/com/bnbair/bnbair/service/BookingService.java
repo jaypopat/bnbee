@@ -1,22 +1,26 @@
 package com.bnbair.bnbair.service;
 
-import com.bnbair.bnbair.domain.Booking;
-import com.bnbair.bnbair.domain.BookingDto;
-import com.bnbair.bnbair.domain.BookingStatus;
-import com.bnbair.bnbair.domain.User;
+import com.bnbair.bnbair.domain.*;
 import com.bnbair.bnbair.exception.BookingNotFoundException;
+import com.bnbair.bnbair.exception.PropertyNotFoundException;
+import com.bnbair.bnbair.exception.UserNotFoundException;
 import com.bnbair.bnbair.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
 public class BookingService {
     private final BookingRepository bookingRepository;
+    private final UserService userService;
+    private final PropertyService propertyService;
 
-    public BookingService(BookingRepository bookingRepository) {
+    public BookingService(BookingRepository bookingRepository, UserService userService, PropertyService propertyService) {
         this.bookingRepository = bookingRepository;
+        this.userService = userService;
+        this.propertyService = propertyService;
     }
 
     public List<Booking> getAllBookings() {
@@ -28,8 +32,23 @@ public class BookingService {
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
     }
 
-    public Booking createBooking(Booking booking) {
-        return bookingRepository.save(booking);
+    public List<Booking> getAllBookingsWithStatus(BookingStatus status) {
+        return bookingRepository.findByStatus(status);
+    }
+
+    public Booking createBooking(BookingDto bookingDto) throws UserNotFoundException, PropertyNotFoundException {
+        User booker = userService.getUserById(bookingDto.getBookerId());
+        Property property = propertyService.getPropertyById(bookingDto.getPropertyId());
+        long stayDuration = ChronoUnit.DAYS.between(bookingDto.getStartDate(), bookingDto.getEndDate());
+        float pricePerNight = property.getPricePerNight();
+
+        Booking newBooking = new Booking(booker, property, bookingDto.getStartDate(), bookingDto.getEndDate(), stayDuration * pricePerNight, bookingDto.getHeadCount());
+
+        return bookingRepository.save(newBooking);
+    }
+
+    public void createBooking(Booking booking) {
+        bookingRepository.save(booking);
     }
 
     // Note: For a booking, some fields simply do not make sense to update.

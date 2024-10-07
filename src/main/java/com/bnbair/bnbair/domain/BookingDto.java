@@ -6,9 +6,8 @@ import java.time.LocalDate;
 
 @Getter
 public class BookingDto {
-    User booker;
-    Property property;
-    @Getter
+    Long bookerId;
+    Long propertyId;
     LocalDate startDate, endDate;
     int headCount;
     BookingStatus status;
