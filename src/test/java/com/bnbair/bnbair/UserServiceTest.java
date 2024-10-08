@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -112,12 +113,14 @@ public class UserServiceTest {
         user.setEmail("charlie.delta@example.com");
 
         userService.createUser(user);
-        List<User> usersByEmail = userService.getUsersByEmail("charlie.delta@example.com");
+        Optional<User> userByEmail = userService.getUsersByEmail("charlie.delta@example.com");
+        if (userByEmail.isEmpty()) {
+            fail();
+        }
+        User foundUser = userByEmail.get();
 
-        assertNotNull(usersByEmail);
-        assertFalse(usersByEmail.isEmpty());
-        assertEquals("Charlie", usersByEmail.getFirst().getFirstName());
-        assertEquals("Delta", usersByEmail.getFirst().getLastName());
+        assertEquals("Charlie", foundUser.getFirstName());
+        assertEquals("Delta", foundUser.getLastName());
     }
 
     @Test

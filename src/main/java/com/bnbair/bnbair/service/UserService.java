@@ -6,6 +6,7 @@ import com.bnbair.bnbair.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -46,7 +47,7 @@ public class UserService {
         User user = getUserById(id);
         userRepository.delete(user);
     }
-    public List<User> getUsersByEmail(String email) {
+    public Optional<User> getUsersByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 

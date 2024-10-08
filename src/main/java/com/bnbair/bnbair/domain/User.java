@@ -37,10 +37,9 @@ public class User {
   @Column(nullable = false, unique = true)
   private String email;
 
-//    @NotBlank(message = "Password is required")
-//    @Size(min = 8, message = "Password must be at least 8 characters long")
-//    @JsonIgnore
-//    private String password;
+  @JsonIgnore
+  @Column(nullable = false)
+  private String password;
 
   @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "booker")
@@ -58,16 +57,18 @@ public class User {
   @Setter(AccessLevel.NONE)
   private LocalDateTime createdAt = LocalDateTime.now();
 
-  @Column
   private Float ownerRating;
 
-  @Column
   private Float guestRating;
 
-  public User(String firstName, String lastName, String email) {
+  private String role;
+
+  public User(String firstName, String lastName, String email, String password, String role) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
+    this.password = password;
+    this.role = role;
     ownerRating = null;
     guestRating = null;
   }
