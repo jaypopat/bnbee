@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_table") // Must keep this name as 'user' is reserved in H2
+@Table
 public class User {
 
   @Id
@@ -37,8 +38,9 @@ public class User {
   @Column(nullable = false, unique = true)
   private String email;
 
+  @NotBlank(message = "Password is required")
+  @Size(min = 8, message = "Password must be at least 8 characters long")
   @JsonIgnore
-  @Column(nullable = false)
   private String password;
 
   @JsonIgnore
@@ -69,8 +71,6 @@ public class User {
     this.email = email;
     this.password = password;
     this.role = role;
-    ownerRating = null;
-    guestRating = null;
   }
 
   @Override

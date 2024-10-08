@@ -3,17 +3,20 @@ package com.bnbair.bnbair.service;
 import com.bnbair.bnbair.domain.User;
 import com.bnbair.bnbair.exception.UserNotFoundException;
 import com.bnbair.bnbair.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
-    public UserService(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getAllUsers() {
@@ -25,8 +28,9 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
 
-
     public User createUser(User user) {
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -36,9 +40,9 @@ public class UserService {
         user.setLastName(userDetails.getLastName());
         user.setEmail(userDetails.getEmail());
 
-//        if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
-//            user.setPassword(userDetails.getPassword());
-//        }
+        if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        }
         return userRepository.save(user);
     }
 
@@ -47,8 +51,13 @@ public class UserService {
         User user = getUserById(id);
         userRepository.delete(user);
     }
-    public Optional<User> getUsersByEmail(String email) {
-        return userRepository.findByEmail(email);
+
+    public User getUserByEmail(String email) throws UserNotFoundException {
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
     }
 
     public List<User> getUsersByFirstAndLastName(String firstName, String lastName) {

@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -58,8 +57,8 @@ public class UserController {
     }
 
     @GetMapping("/findByEmail")
-    public ResponseEntity<Optional<User>> findUsersByEmail(@RequestParam String email) {
-        Optional<User> users = userService.getUsersByEmail(email);
-        return ResponseEntity.ok(users);
+    public ResponseEntity<User> findUserByEmail(@RequestParam String email) throws UserNotFoundException {
+        User user = userService.getUserByEmail(email);
+        return ResponseEntity.ok(user);
     }
 }
