@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_table") // Must keep this name as 'user' is reserved in H2
+@Table
 public class User {
 
   @Id
@@ -37,10 +38,10 @@ public class User {
   @Column(nullable = false, unique = true)
   private String email;
 
-//    @NotBlank(message = "Password is required")
-//    @Size(min = 8, message = "Password must be at least 8 characters long")
-//    @JsonIgnore
-//    private String password;
+  @NotBlank(message = "Password is required")
+  @Size(min = 8, message = "Password must be at least 8 characters long")
+  @JsonIgnore
+  private String password;
 
   @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "booker")
@@ -58,18 +59,18 @@ public class User {
   @Setter(AccessLevel.NONE)
   private LocalDateTime createdAt = LocalDateTime.now();
 
-  @Column
   private Float ownerRating;
 
-  @Column
   private Float guestRating;
 
-  public User(String firstName, String lastName, String email) {
+  private String role;
+
+  public User(String firstName, String lastName, String email, String password, String role) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
-    ownerRating = null;
-    guestRating = null;
+    this.password = password;
+    this.role = role;
   }
 
   @Override

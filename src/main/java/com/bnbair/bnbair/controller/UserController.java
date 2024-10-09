@@ -57,8 +57,8 @@ public class UserController {
     }
 
     @GetMapping("/findByEmail")
-    public ResponseEntity<List<User>> findUsersByEmail(@RequestParam String email) {
-        List<User> users = userService.getUsersByEmail(email);
-        return ResponseEntity.ok(users);
+    public ResponseEntity<User> findUserByEmail(@RequestParam String email) throws UserNotFoundException {
+        User user = userService.getUserByEmail(email);
+        return ResponseEntity.ok(user);
     }
 }

@@ -40,8 +40,8 @@ public class AirbnbApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) /* throws Exception */ {
-        User user1 = new User("Jay", "Bomba", "j.bomba@gmail.com");
-        User user2 = new User("Pat", "Reeks", "p.reeks@gmail.com");
+        User user1 = new User("Jay", "Bomba", "j.bomba@gmail.com", "password1", "user");
+        User user2 = new User("Pat", "Reeks", "p.reeks@gmail.com", "password2", "user");
         userService.createUser(user1);
         userService.createUser(user2);
 
