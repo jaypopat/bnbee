@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function Navbar() {
   return (
-    <nav className="min-w-full bg-primary-foreground rounded-3xl h-auto shadow-lg flex items-center py-4 px-8">
+    <nav className="bg-primary-foreground rounded-3xl h-auto shadow-lg flex items-center py-4 px-6">
       <div className="flex justify-between w-full">
         {/* Logo */}
         <div className="flex-shrink-0">
