@@ -19,7 +19,7 @@ function AccountDropDown() {
         <DropdownMenuTrigger>
           <User className="text-primary" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="w-48" align="end">
           {signedIn ? (
             <React.Fragment>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>

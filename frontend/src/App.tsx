@@ -3,6 +3,7 @@ import './App.css';
 import { DatePickerWithRange } from '@/components/DateRangePicker';
 import { Input } from '@/components/ui/input';
 import MainLayout from '@/components/MainLayout';
+import LastTripCard from './components/LastTripCard';
 
 function App() {
   return (
@@ -43,6 +44,20 @@ function App() {
         <button className="bg-primary text-primary-foreground font-medium text-2xl px-4 py-2 rounded-[20px] min-h-full flex justify-center items-center w-44">
           Search
         </button>
+      </div>
+
+      {/* Last Trips */}
+      <div className="flex flex-col gap-10">
+        {/* Heading */}
+        <div className="flex justify-start">
+          <h1 className="text-4xl font-semibold leading-9">Your Last Trips</h1>
+        </div>
+        <div className="flex flex-row gap-4">
+          <LastTripCard />
+          <LastTripCard />
+          <LastTripCard />
+          <LastTripCard />
+        </div>
       </div>
     </MainLayout>
   );
