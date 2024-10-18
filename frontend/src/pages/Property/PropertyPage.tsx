@@ -151,8 +151,8 @@ function PropertyPage() {
       <div className="w-full flex flex-wrap gap-3">
         {facilities.map(facility => (
           <div key={facility} className="flex items-center gap-2 rounded-2xl shadow-lg px-6 py-3 text-gray-400">
-            {Facilities.get(facility)?.icon}
-            {Facilities.get(facility)?.name}
+            {Facilities[facility].name}
+            {Facilities[facility].icon}
           </div>
         ))}
       </div>
