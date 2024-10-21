@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog.tsx';
 import SignInDialog from '@/components/SignInDialog.tsx';
 import { SignUpDialog } from '@/components/SignUpDialog.tsx';
+import { AuthContext } from '@/context/AuthProvider';
 
 // Note: Shadcn/Radix UI have issues dealing with multiple dialogs within a dropdown menu
 // props to the guy below for the workaround
@@ -22,7 +23,7 @@ enum Dialogs { signUpDialog, signInDialog}
 
 function AccountDropDown() {
   // Used to toggle the sign in state for now
-  const [signedIn, setSignedIn] = useState(false);
+  const { user,  signOut } = useContext(AuthContext);
   const [dialog, setDialog] = useState(Dialogs.signUpDialog);
 
   return (
@@ -32,7 +33,7 @@ function AccountDropDown() {
           <User className="text-primary" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {signedIn ? (
+          {user ? (
             <React.Fragment>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
@@ -45,7 +46,7 @@ function AccountDropDown() {
                 <span>Settings</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex items-center gap-2" onClick={() => setSignedIn(false)}>
+              <DropdownMenuItem className="flex items-center gap-2" onClick={signOut}>
                 <LogOut className="size-4" />
                 <span>Logout</span>
               </DropdownMenuItem>
@@ -53,7 +54,7 @@ function AccountDropDown() {
           ) : (
             <React.Fragment>
               <DialogTrigger asChild onClick={() => setDialog(Dialogs.signUpDialog)}>
-                <DropdownMenuItem className="flex items-center gap-2" >
+                <DropdownMenuItem className="flex items-center gap-2">
                   <User className="size-4" />
                   <span>Sign Up</span>
                 </DropdownMenuItem>
@@ -65,7 +66,6 @@ function AccountDropDown() {
                   <span>Sign In</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-
             </React.Fragment>
           )}
         </DropdownMenuContent>
