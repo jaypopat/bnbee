@@ -1,12 +1,15 @@
 package com.bnbair.bnbair.service;
 
+import com.bnbair.bnbair.domain.RegisterCredentials;
 import com.bnbair.bnbair.domain.User;
+import com.bnbair.bnbair.exception.UserAlreadyExistsException;
 import com.bnbair.bnbair.exception.UserNotFoundException;
 import com.bnbair.bnbair.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -62,5 +65,22 @@ public class UserService {
 
     public List<User> getUsersByFirstAndLastName(String firstName, String lastName) {
         return userRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+    }
+    public User registerNewUser(RegisterCredentials accountCredentials) throws UserAlreadyExistsException {
+
+        Optional<User> existingUser = userRepository.findByEmail(accountCredentials.email());
+
+        if (existingUser.isPresent()) {
+            throw new UserAlreadyExistsException("Email is already in use.");
+        }
+
+        User newUser = new User();
+        newUser.setEmail(accountCredentials.email());
+        newUser.setPassword(passwordEncoder.encode(accountCredentials.password()));
+        newUser.setFirstName(accountCredentials.firstName());
+        newUser.setLastName(accountCredentials.lastName());
+        newUser.setRole("user");
+
+        return userRepository.save(newUser);
     }
 }
