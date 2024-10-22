@@ -7,48 +7,62 @@ interface User {
   email: string,
   createdAt: string,
   ownerRating: number | null,
-  reviewerRating: number | null,
+  guestRating: number | null,
+  role: 'user' | 'admin'
 }
 
 interface AuthContextT {
   user: User | null;
-  signIn: (email: string,  password: string) => Promise<boolean>
+  signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => void;
+  signUp: (email: string, password: string) => Promise<boolean>;
 }
 
 export const AuthContext = createContext<AuthContextT>({} as AuthContextT);
 
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User| null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   // Returns whether the user could sign in
-  const signIn = async (email: string,  password: string) => {
-    const data = await fetch('http://localhost:8080/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({email, password})
-    }).then((response) => response.json());
-    console.log(data);
+  const signIn = async (email: string, password: string) => {
+    try {
+      const response = await fetch('http://localhost:8080/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (data.ok) {
-      setUser(data.body);
-      return true;
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+      const user = await response.json();
+      console.log('User:', user);
+      setUser(user);
+
+      alert('User signed in successfully!')
+      return user;
+
+    } catch (error) {
+      console.error('Error during sign-in:', error);
+      return null;
     }
-    return false;
+  };
+  const signUp = async (email: string, password: string):Promise<boolean> => {
+    // implement register endpoint in spring boot
+    return true;
   }
+
 
   const signOut = async () => {
     setUser(null);
-  }
+  };
 
   const value: AuthContextT = {
     user,
     signIn,
     signOut,
-  }
+    signUp
+  };
 
   return (
     <AuthContext.Provider value={value}>
