@@ -4,7 +4,6 @@ import com.bnbair.bnbair.domain.LoginCredentials;
 import com.bnbair.bnbair.domain.User;
 import com.bnbair.bnbair.exception.UserNotFoundException;
 import com.bnbair.bnbair.service.JwtService;
-import com.bnbair.bnbair.service.UserDetailsServiceImpl;
 import com.bnbair.bnbair.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
