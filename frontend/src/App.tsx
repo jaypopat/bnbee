@@ -2,8 +2,6 @@ import './App.css';
 import MainLayout from '@/components/MainLayout';
 import SearchBar from './components/SearchBar';
 import { Button } from './components/ui/button';
-import PropertyImage from '@/assets/property_view.png';
-import RecommendedImage from '@/assets/recommended.png';
 import { ArrowDownRight, Heart, Star } from 'lucide-react';
 
 const accommodationTypes = ['Hotels', 'Apartments', 'Barns', 'Villas', 'Chalets', 'Cottages', 'Hostels'];
@@ -71,7 +69,7 @@ function App() {
           <h1 className="text-3xl font-semibold leading-9">Search by accommodation type</h1>
         </div>
         {/* Type cards */}
-        <div className="flex flex-row gap-8 items-center justify-center h-auto flex-wrap">
+        <div className="flex flex-row gap-10 items-center justify-center h-auto flex-wrap">
           {accommodationTypes.map(type => (
             <div key={type}>
               {/* TODO: Link to the search results page with a property type */}
@@ -118,7 +116,7 @@ const LastTripCard = ({ location, title, dateFrom, dateTo }: LastTripCardProps) 
 
   return (
     <div className="flex flex-row gap-2 bg-primary-foreground rounded-[25px] shadow-lg p-1.5 w-96">
-      <img /* TODO: User uploaded image url */ src={PropertyImage} alt="Property View" className="rounded-[20px] flex-1" />
+      <div className="bg-primary w-1/2 h-full rounded-[20px]"></div>
       <div className="flex flex-col gap-1">
         {/* Location */}
         <p className="text-xs font-semibold text-muted-foreground/50 pt-2">{location}</p>
@@ -144,22 +142,21 @@ const LastTripCard = ({ location, title, dateFrom, dateTo }: LastTripCardProps) 
 
 const RecommendationCard = () => {
   return (
-    <div className="flex shadow-xl bg-primary-foreground p-1">
-      <div>
-        <img src={RecommendedImage} alt="Cliffs of Moher" />
-        <div className="bg-primary-foreground flex flex-col">
-          <div className="p-6 flex flex-col gap-6">
-            <h1 className="text-2xl font-semibold">Cliffs of Moher</h1>
-            <p className="text-sm font-normal text-muted-foreground/75">10 variants</p>
-          </div>
-          <div className="flex justify-end gap-1">
-            <Button variant="link" size="icon" className="rounded-full bg-primary">
-              <Heart className="text-primary-foreground" />
-            </Button>
-            <Button variant="link" size="icon" className="rounded-full bg-primary">
-              <ArrowDownRight className="text-primary-foreground" />
-            </Button>
-          </div>
+    <div className="shadow-lg shrink-0 relative overflow-hidden rounded-[20px] transition-all duration-300 hover:scale-105 w-1/4 h-[19rem]">
+      {/* <img src={RecommendedImage} alt="Cliffs of Moher" className="h-72 rounded-[20px] object-cover" /> */}
+      <div className="bg-primary w-full h-full"></div>
+      <div className="bg-primary-foreground/95 rounded-t-[20px] absolute bottom-0 w-full p-1">
+        <div className="flex flex-col gap-6 p-4">
+          <h1 className="text-2xl font-bold">Cliffs of Moher</h1>
+          <p className="text-sm leading-6 font-normal text-muted-foreground/75">10 variants</p>
+        </div>
+        <div className="flex justify-end gap-1">
+          <Button variant="link" size="icon" className="rounded-full bg-primary">
+            <Heart className="text-primary-foreground" />
+          </Button>
+          <Button variant="link" size="icon" className="rounded-full bg-primary">
+            <ArrowDownRight className="text-primary-foreground" />
+          </Button>
         </div>
       </div>
     </div>
