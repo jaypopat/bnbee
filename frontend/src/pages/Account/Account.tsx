@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { Card, CardContent } from "@/components/ui/card.tsx";
+import { Input } from "@/components/ui/input.tsx";
+import { Label } from "@/components/ui/label.tsx";
 import { Pencil, User, Lock, Eye, Bell, Check, X } from "lucide-react";
-import MainLayout from "@/components/MainLayout";
-import { useToast } from "@/hooks/use-toast";
+import MainLayout from "@/components/MainLayout.tsx";
+import { useToast } from "@/hooks/use-toast.ts";
 
 interface User {
   id: number;
