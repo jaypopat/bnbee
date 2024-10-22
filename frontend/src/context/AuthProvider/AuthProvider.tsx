@@ -1,4 +1,6 @@
 import {createContext, ReactNode, useState} from 'react';
+import { getAuthToken, setAuthToken } from '@/api';
+import { getUser } from '@/api/user';
 
 interface User {
     id: number,
@@ -27,26 +29,19 @@ export default function AuthProvider({children}: { children: ReactNode }) {
     // Returns whether the user could sign in
     const signIn = async (email: string, password: string) => {
         try {
-            const response = await fetch('http://localhost:8080/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({email, password}),
-            });
+            // Get the auth token from the auth endpoint.
+            const token = await getAuthToken(email, password);
+            setAuthToken(token);
+            // Get the user from the user endpoint using the auth token.
+            setUser(await getUser());
 
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-            const user = await response.json();
-            console.log('User:', user);
-            setUser(user);
-
-            alert('User signed in successfully!')
-            return user;
-
+            return true;
         } catch (error) {
             console.error('Error during sign-in:', error);
-            return null;
+            return false;
         }
     };
+
     const signUp = async (email: string, password: string, firstName: string, lastName: string): Promise<boolean> => {
         try {
             const response = await fetch('http://localhost:8080/register', {
@@ -73,6 +68,7 @@ export default function AuthProvider({children}: { children: ReactNode }) {
 
     const signOut = async () => {
         setUser(null);
+        setAuthToken();
     };
 
     const value: AuthContextT = {

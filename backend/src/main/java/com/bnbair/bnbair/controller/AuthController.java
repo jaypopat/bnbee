@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,12 +37,23 @@ public class AuthController {
         Authentication auth = authenticationManager.authenticate(creds);
         // Generate token
         String jwt = jwtService.getToken(auth.getName());
-        User user = userService.getUserByEmail(auth.getName());
         // Build response with the generated token
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
                 .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Authorization")
-                .body(user);
+                .build();
+    }
+
+    // Get the user data from the user's jwt token
+    @GetMapping("/me")
+    public ResponseEntity<User> getUserFromToken(@RequestHeader("Authorization") String bearerToken) {
+        String email = jwtService.getAuthUser(bearerToken);
+        try {
+            User user = userService.getUserByEmail(email);
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/register")
