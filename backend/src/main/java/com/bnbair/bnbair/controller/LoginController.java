@@ -22,13 +22,11 @@ public class LoginController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     public LoginController(JwtService jwtService, AuthenticationManager authenticationManager, UserService userService, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @PostMapping("/login")
@@ -40,7 +38,7 @@ public class LoginController {
         User user = userService.getUserByEmail(auth.getName());
         // Build response with the generated token
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwts) // Added space after "Bearer"
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwts)
                 .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Authorization")
                 .body(user);
     }
