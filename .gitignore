@@ -1,2 +1,6 @@
-## VS CODE ##
+## Editors ##
 .vscode
+.idea
+
+## Gradle ##
+.gradle
