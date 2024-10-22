@@ -28,7 +28,7 @@ export default function SignInDialog() {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="password" className="text-right">Password</Label>
-            <Input id="password" className="col-span-3" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input type="password" id="password" className="col-span-3" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
         </div>
         <DialogFooter>
