@@ -66,7 +66,7 @@ const reviews: PropertyReview[] = [
   },
 ];
 
-function PropertyPage() {
+export default function PropertyPage() {
   return (
     <MainLayout>
       {/* Search box */}
@@ -186,9 +186,6 @@ function PropertyPage() {
     </MainLayout>
   );
 }
-
-export default PropertyPage;
-
 const sectionNames = ['Overview', 'Information', 'Facilities', 'Conditions', 'Reviews'];
 
 const SectionLinks = () => {

@@ -7,7 +7,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, Settings, LogOut } from 'lucide-react';
+import { User, Settings, LogOut, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 function AccountDropDown() {
   // Used to toggle the sign in state for now
@@ -24,10 +25,18 @@ function AccountDropDown() {
             <React.Fragment>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <Link to={"/account"}>
               <DropdownMenuItem className="flex items-center gap-2">
                 <User className="size-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
+              </Link>
+              <Link to={"/bookings"}>
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <Calendar className="size-4" />
+                  <span>Bookings</span>
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem className="flex items-center gap-2">
                 <Settings className="size-4" />
                 <span>Settings</span>
