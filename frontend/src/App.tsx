@@ -144,6 +144,17 @@ function App() {
         {/* Location Cards */}
         <UniqueLocationCarousel />
       </div>
+
+      {/* Sign Up Banner */}
+      <div className="h-auto w-full bg-primary py-10 px-12 rounded-[20px]">
+        <div className="flex flex-row justify-between items-center">
+          <h1 className="text-4xl font-semibold text-primary-foreground w-1/2">
+            Sign up and get access to our loyalty programme and discounts from 10%
+          </h1>
+          {/* TODO: Link to Sign Up */}
+          <Button variant="secondary">Create Account</Button>
+        </div>
+      </div>
     </MainLayout>
   );
 }
