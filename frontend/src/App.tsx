@@ -152,7 +152,9 @@ function App() {
             Sign up and get access to our loyalty programme and discounts from 10%
           </h1>
           {/* TODO: Link to Sign Up */}
-          <Button variant="secondary">Create Account</Button>
+          <Button variant="outline" className="rounded-sm">
+            Create Account
+          </Button>
         </div>
       </div>
     </MainLayout>
@@ -179,7 +181,7 @@ const LastTripCard = ({ location, title, dateFrom, dateTo }: LastTrip) => {
       <div className="bg-primary w-1/2 h-full rounded-[20px]" />
       <div className="flex flex-col gap-1">
         {/* Location */}
-        <p className="text-xs font-semibold text-muted-foreground/50 pt-2">{location}</p>
+        <p className="text-xs font-semibold text-muted-foreground/75 pt-2">{location}</p>
         {/* Title */}
         <h1 className="text-lg text-secondary-foreground font-bold leading-6">{title}</h1>
         {/* Rating */}
@@ -191,7 +193,7 @@ const LastTripCard = ({ location, title, dateFrom, dateTo }: LastTrip) => {
         </div>
         {/* Date */}
         <div className="py-1">
-          <p className="text-xs text-muted-foreground/50 font-medium">
+          <p className="text-xs text-muted-foreground/75 font-medium">
             {formatDateToDayMonth(dateFrom)} - {formatDateToDayMonth(dateTo)}
           </p>
         </div>
@@ -202,13 +204,14 @@ const LastTripCard = ({ location, title, dateFrom, dateTo }: LastTrip) => {
 
 const RecommendationCard = () => {
   return (
-    <div className="shadow-lg shrink-0 relative overflow-hidden rounded-[20px] transition-all duration-300 hover:scale-105 w-1/4 h-[19rem] basis-1/4">
-      {/* <img src={RecommendedImage} alt="Cliffs of Moher" className="h-72 rounded-[20px] object-cover" /> */}
-      <div className="bg-primary w-full h-full"></div>
+    <div className="shadow-lg relative overflow-hidden rounded-[20px] transition-all duration-300 hover:scale-105 h-[19rem] w-1/4">
+      {/* Image */}
+      <div className="bg-primary w-full h-full" />
       <div className="bg-primary-foreground/95 rounded-t-[20px] absolute bottom-0 w-full p-1">
+        {/* Name */}
         <div className="flex flex-col gap-6 p-4">
           <h1 className="text-2xl font-bold">Cliffs of Moher</h1>
-          <p className="text-sm leading-6 font-normal text-muted-foreground/75">10 variants</p>
+          <p className="text-sm leading-6 font-normal text-muted-foreground">10 variants</p>
         </div>
         <div className="flex justify-end gap-1">
           <Button variant="link" size="icon" className="rounded-full bg-primary shadow-lg">
@@ -244,13 +247,13 @@ const UniqueLocationCard = ({ name, location, rating, price }: UniqueLocation) =
         </div>
         {/* Name & Location*/}
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold">{name}</h1>
-          <p className="text-sm leading-6 font-normal text-muted-foreground/75">{location}</p>
+          <h1 className="text-2xl font-bold line-clamp-1 overflow-hidden text-ellipsis">{name}</h1>
+          <p className="text-sm leading-6 font-normal text-muted-foreground">{location}</p>
         </div>
         <div className="flex flex-row justify-between">
           {/* Price */}
           <div className="flex gap-2 items-baseline">
-            <span className="text-muted-foreground/75 text-sm leading-6 font-normal">From</span>
+            <span className="text-muted-foreground text-sm leading-6 font-normal">From</span>
             <span className="text-3xl font-semibold">
               {price.toLocaleString('en-US', {
                 style: 'currency',
@@ -275,7 +278,12 @@ const UniqueLocationCard = ({ name, location, rating, price }: UniqueLocation) =
 
 const UniqueLocationCarousel = () => {
   return (
-    <Carousel className="w-full">
+    <Carousel
+      className="w-full"
+      opts={{
+        watchDrag: false,
+      }}
+    >
       <CarouselPrevious />
       <CarouselContent>
         {uniqueLocations.map(location => (
