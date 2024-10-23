@@ -25,13 +25,13 @@ function AccountDropDown() {
             <React.Fragment>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <Link to={"/account"}>
-              <DropdownMenuItem className="flex items-center gap-2">
-                <User className="size-4" />
-                <span>Profile</span>
-              </DropdownMenuItem>
+              <Link to={'/account'}>
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <User className="size-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
               </Link>
-              <Link to={"/bookings"}>
+              <Link to={'/bookings'}>
                 <DropdownMenuItem className="flex items-center gap-2">
                   <Calendar className="size-4" />
                   <span>Bookings</span>
