@@ -5,14 +5,20 @@ import { Button } from '@/components/ui/button.tsx';
 import { useState } from 'react';
 import useAuth from '@/context/AuthProvider';
 
-export default function SignInDialog() {
+interface SignUpDialogPropsT {
+  closeDialog: () => void
+}
+
+export default function SignInDialog({closeDialog}: SignUpDialogPropsT) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signIn } = useAuth();
 
   const handleSignIn = async () => {
     const success = await signIn(email, password);
-    console.log("Signed in success:", success);
+    if (success) {
+      closeDialog();
+    }
   }
 
   return (
