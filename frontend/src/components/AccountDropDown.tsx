@@ -25,9 +25,15 @@ function AccountDropDown() {
   // Used to toggle the sign in state for now
   const { user,  signOut } = useContext(AuthContext);
   const [dialog, setDialog] = useState(Dialogs.signUpDialog);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  // Function meant to be used by the forms to autoclose on successful sign in
+  const closeDialog = () => {
+    setDialogOpen(prevOpen => !prevOpen);
+  }
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DropdownMenu>
         <DropdownMenuTrigger>
           <User className="text-primary" />
@@ -72,8 +78,8 @@ function AccountDropDown() {
       </DropdownMenu>
 
       {dialog === Dialogs.signUpDialog
-        ? <SignUpDialog />
-        : <SignInDialog />
+        ? <SignUpDialog closeDialog={closeDialog} />
+        : <SignInDialog closeDialog={closeDialog} />
       }
     </Dialog>
   );

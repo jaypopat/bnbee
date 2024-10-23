@@ -10,7 +10,11 @@ import { Label } from "@/components/ui/label"
 import useAuth from '@/context/AuthProvider';
 import { useState } from 'react';
 
-export function SignUpDialog() {
+interface SignUpDialogPropsT {
+  closeDialog: () => void
+}
+
+export function SignUpDialog({closeDialog}: SignUpDialogPropsT) {
 
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -37,6 +41,7 @@ export function SignUpDialog() {
     const success = await signUp(email, password, firstName, lastName);
     if (success) {
       console.log("Signed up successfully");
+      closeDialog();
     } else {
       console.log("Failed to sign up");
     }
