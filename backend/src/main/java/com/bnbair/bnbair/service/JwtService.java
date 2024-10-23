@@ -15,7 +15,7 @@ public class JwtService {
     // 1 day in ms - should be shorter in production
     static final long EXPIRATION_TIME = 86_400_000;
 
-    static final String PREFIX = "Bearer";
+    static final String PREFIX = "Bearer ";
 
     static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
@@ -28,9 +28,14 @@ public class JwtService {
                 .compact();
     }
 
-    // Get a token from request Authorization header, verify the token and get username
+    // get the auth user from the request's auth header
     public String getAuthUser(HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        return getAuthUser(token);
+    }
+
+    // Gets the user from a token string
+    public String getAuthUser(String token) {
         if (token != null) {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
