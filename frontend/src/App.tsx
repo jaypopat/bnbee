@@ -3,9 +3,11 @@ import MainLayout from '@/components/MainLayout';
 import SearchBar from './components/SearchBar';
 import { Button } from './components/ui/button';
 import { ArrowDownRight, Heart, Star } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './components/ui/carousel';
 
 const accommodationTypes = ['Hotels', 'Apartments', 'Barns', 'Villas', 'Chalets', 'Cottages', 'Hostels'];
-const lastTrips = [
+const lastTrips: LastTrip[] = [
   {
     title: 'The Blue House',
     location: 'Galway, Ireland',
@@ -33,6 +35,45 @@ const lastTrips = [
     rating: 4.5,
     dateFrom: new Date('2022-08-12'),
     dateTo: new Date('2022-08-15'),
+  },
+];
+
+const uniqueLocations: UniqueLocation[] = [
+  {
+    name: 'Maritime Freizeit Camp "MFC" Efurter Seen',
+    location: 'Frankfurt, Germany',
+    rating: 9,
+    price: 89,
+  },
+  {
+    name: 'Seaside Resort',
+    location: 'Hamburg, Germany',
+    rating: 8,
+    price: 120,
+  },
+  {
+    name: 'Mountain Retreat',
+    location: 'Munich, Germany',
+    rating: 10,
+    price: 150,
+  },
+  {
+    name: 'Urban Oasis',
+    location: 'Berlin, Germany',
+    rating: 7,
+    price: 110,
+  },
+  {
+    name: 'Countryside Escape',
+    location: 'Bavaria, Germany',
+    rating: 9,
+    price: 95,
+  },
+  {
+    name: 'Historic Downtown Stay',
+    location: 'Cologne, Germany',
+    rating: 8,
+    price: 130,
   },
 ];
 
@@ -96,11 +137,18 @@ function App() {
           <RecommendationCard />
         </div>
       </div>
+
+      {/* Unique Locations */}
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-semibold">Choose a unique location</h1>
+        {/* Location Cards */}
+        <UniqueLocationCarousel />
+      </div>
     </MainLayout>
   );
 }
 
-type LastTripCardProps = {
+type LastTrip = {
   imageUrl?: string;
   location: string;
   title: string;
@@ -109,14 +157,15 @@ type LastTripCardProps = {
   dateTo: Date;
 };
 
-const LastTripCard = ({ location, title, dateFrom, dateTo }: LastTripCardProps) => {
+const LastTripCard = ({ location, title, dateFrom, dateTo }: LastTrip) => {
   function formatDateToDayMonth(date: Date) {
     return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
   }
 
   return (
     <div className="flex flex-row gap-2 bg-primary-foreground rounded-[25px] shadow-lg p-1.5 w-96">
-      <div className="bg-primary w-1/2 h-full rounded-[20px]"></div>
+      {/* Image */}
+      <div className="bg-primary w-1/2 h-full rounded-[20px]" />
       <div className="flex flex-col gap-1">
         {/* Location */}
         <p className="text-xs font-semibold text-muted-foreground/50 pt-2">{location}</p>
@@ -142,7 +191,7 @@ const LastTripCard = ({ location, title, dateFrom, dateTo }: LastTripCardProps) 
 
 const RecommendationCard = () => {
   return (
-    <div className="shadow-lg shrink-0 relative overflow-hidden rounded-[20px] transition-all duration-300 hover:scale-105 w-1/4 h-[19rem]">
+    <div className="shadow-lg shrink-0 relative overflow-hidden rounded-[20px] transition-all duration-300 hover:scale-105 w-1/4 h-[19rem] basis-1/4">
       {/* <img src={RecommendedImage} alt="Cliffs of Moher" className="h-72 rounded-[20px] object-cover" /> */}
       <div className="bg-primary w-full h-full"></div>
       <div className="bg-primary-foreground/95 rounded-t-[20px] absolute bottom-0 w-full p-1">
@@ -151,10 +200,10 @@ const RecommendationCard = () => {
           <p className="text-sm leading-6 font-normal text-muted-foreground/75">10 variants</p>
         </div>
         <div className="flex justify-end gap-1">
-          <Button variant="link" size="icon" className="rounded-full bg-primary">
+          <Button variant="link" size="icon" className="rounded-full bg-primary shadow-lg">
             <Heart className="text-primary-foreground" />
           </Button>
-          <Button variant="link" size="icon" className="rounded-full bg-primary">
+          <Button variant="link" size="icon" className="rounded-full bg-primary shadow-lg">
             <ArrowDownRight className="text-primary-foreground" />
           </Button>
         </div>
@@ -163,4 +212,69 @@ const RecommendationCard = () => {
   );
 };
 
+type UniqueLocation = {
+  imageUrl?: string;
+  name: string;
+  location: string;
+  rating: number;
+  price: number;
+};
+
+const UniqueLocationCard = ({ name, location, rating, price }: UniqueLocation) => {
+  return (
+    <div className="shrink-0 relative overflow-hidden rounded-[20px] h-[19rem]">
+      {/* Image */}
+      <div className="bg-primary w-full h-full"></div>
+      {/* Content */}
+      <div className="bg-primary-foreground/95 rounded-t-[20px] absolute bottom-0 w-full p-3">
+        {/* Rating */}
+        <div className="flex justify-end">
+          <Badge>{rating}/10</Badge>
+        </div>
+        {/* Name & Location*/}
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold">{name}</h1>
+          <p className="text-sm leading-6 font-normal text-muted-foreground/75">{location}</p>
+        </div>
+        <div className="flex flex-row justify-between">
+          {/* Price */}
+          <div className="flex gap-2 items-baseline">
+            <span className="text-muted-foreground/75 text-sm leading-6 font-normal">From</span>
+            <span className="text-3xl font-semibold">
+              {price.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              })}
+            </span>
+          </div>
+          {/* Buttons */}
+          <div className="flex flex-row gap-1">
+            <Button variant="link" size="icon" className="rounded-full bg-primary shadow-lg">
+              <Heart className="text-primary-foreground" />
+            </Button>
+            <Button variant="link" size="icon" className="rounded-full bg-primary shadow-lg">
+              <ArrowDownRight className="text-primary-foreground" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const UniqueLocationCarousel = () => {
+  return (
+    <Carousel className="w-full">
+      <CarouselPrevious />
+      <CarouselContent>
+        {uniqueLocations.map(location => (
+          <CarouselItem key={location.name} className="basis-1/3">
+            <UniqueLocationCard {...location} />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselNext />
+    </Carousel>
+  );
+};
 export default App;
