@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { User, Settings, LogOut, Calendar } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import {
   Dialog,
   DialogTrigger,
@@ -16,10 +15,12 @@ import {
 import SignInDialog from '@/components/SignInDialog.tsx';
 import { SignUpDialog } from '@/components/SignUpDialog.tsx';
 import { AuthContext } from '@/context/AuthProvider';
+import { Link } from 'react-router-dom';
 
 // Note: Shadcn/Radix UI have issues dealing with multiple dialogs within a dropdown menu
 // props to the guy below for the workaround
 // https://github.com/shadcn-ui/ui/issues/1011#issuecomment-1930103090
+
 enum Dialogs { signUpDialog, signInDialog }
 
 function AccountDropDown() {
