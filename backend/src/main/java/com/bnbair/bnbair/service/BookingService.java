@@ -82,4 +82,8 @@ public class BookingService {
     public List<Booking> getBookingsForPropertyBetweenDates(Long propertyId, LocalDate startDate, LocalDate endDate) {
         return bookingRepository.findByPropertyIdBetween(propertyId, startDate, endDate);
     }
+
+    public List<Booking> getBookingsForUser(Long userId) {
+        return bookingRepository.findByBookerId(userId);
+    }
 }

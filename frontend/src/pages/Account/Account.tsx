@@ -9,6 +9,7 @@ import MainLayout from "@/components/MainLayout";
 import {useToast} from "@/hooks/use-toast";
 import useAuth from "@/context/AuthProvider";
 import api from "@/api";
+import {isAxiosError} from "axios";
 
 interface UserProfile {
     id: number;
@@ -28,8 +29,15 @@ async function updateUser(userId: number, data: UserProfile) {
         const response = await api.put(`/api/users/${userId}`, data);
         console.log(response.data);
         return response.data;
-    } catch (error: any) {
-        console.error('Error updating user:', error.response?.status, error.response?.data);
+    } catch (error) {
+        if (isAxiosError(error)) {
+            console.error('Error updating user:', {
+                status: error.response?.status,
+                data: error.response?.data,
+            });
+        } else {
+            console.error('Unexpected error:', error);
+        }
         throw error;
     }
 }
@@ -72,7 +80,6 @@ export default function AccountSettings() {
                 description: "Failed to update field",
                 variant: "destructive",
             });
-            console.error(error);
         }
     };
 

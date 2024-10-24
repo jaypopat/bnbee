@@ -16,4 +16,6 @@ public interface BookingRepository extends CrudRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b WHERE b.property.id = ?1 AND b.startDate >= ?2 AND b.endDate <= ?3")
     List<Booking> findByPropertyIdBetween(@Param("propertyId") Long propertyId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    List<Booking> findByBookerId(Long bookerId);
 }
