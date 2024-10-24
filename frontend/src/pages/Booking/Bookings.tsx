@@ -3,6 +3,9 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import {Badge} from "@/components/ui/badge.tsx"
 import {CalendarDays, MapPin, User} from "lucide-react"
 import MainLayout from "@/components/MainLayout.tsx"
+import api from "@/api";
+import {useEffect, useState} from "react";
+import useAuth from "@/context/AuthProvider";
 
 interface Booking {
     bookerId: number
@@ -13,57 +16,30 @@ interface Booking {
     checkOut: string // localdate
     headcount: number,
     status: "pending" | "confirmed" | "cancelled" // booking dto status enum values
-    imageUrl: string // add to db schema or get the image from the property id implement when hooking up to backend
+    imageUrl?: string // add to db schema or get the image from the property id implement when hooking up to backend
 }
 
-const bookings: Booking[] = [
-    {
-        bookerId: 1,
-        propertyId: 101,
-        propertyName: "Cozy Downtown Apartment",
-        location: "New York, USA",
-        checkIn: "2025-03-15",
-        checkOut: "2024-03-20",
-        headcount: 2,
-        status: "confirmed",
-        imageUrl: "https://www.houseplans.net/uploads/plans/32005/elevations/88909-768.jpg?v=091024132147",
-    },
-    {
-        bookerId: 1,
-        propertyId: 102,
-        propertyName: "Seaside Villa",
-        location: "Galway, Ireland",
-        checkIn: "2026-10-22",
-        checkOut: "2026-10-24",
-        headcount: 3,
-        status: "confirmed",
-        imageUrl: "https://www.houseplans.net/uploads/plans/32005/elevations/88909-768.jpg?v=091024132147",
-    },
-    {
-        bookerId: 1,
-        propertyId: 103,
-        propertyName: "City Center Loft",
-        location: "Dublin, Ireland",
-        checkIn: "2024-05-01",
-        checkOut: "2024-05-05",
-        headcount: 4,
-        status: "pending",
-        imageUrl: "https://www.houseplans.net/uploads/plans/32005/elevations/88909-768.jpg?v=091024132147",
-    },
-    {
-        bookerId: 1,
-        propertyId: 104,
-        propertyName: "Rustic Countryside Cottage",
-        location: "Galway, Ireland",
-        checkIn: "2023-08-10",
-        checkOut: "2023-08-15",
-        headcount: 2,
-        status: "cancelled",
-        imageUrl: "https://www.houseplans.net/uploads/plans/32005/elevations/88909-768.jpg?v=091024132147",
-    },
-]
+async function getBookingsForUser(userId: number): Promise<Booking[]> {
+    try {
+        const response = await api.get(`/api/bookings/users/${userId}`);
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching bookings:', error?.response?.status, error?.response?.data);
+        throw error;
+    }
+}
 
 export default function BookingsComponent() {
+
+    const {user} = useAuth();
+
+    useEffect(() => {
+        getBookingsForUser(user?.id as number).then(setBookings);
+    }, []);
+
+
+    const [bookings, setBookings] = useState<Booking[]>([])
     const currentDate = new Date()
 
     const isUpcoming = (booking: Booking) => {
