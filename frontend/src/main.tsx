@@ -7,6 +7,7 @@ import PropertyPage from '@/pages/Property/PropertyPage.tsx';
 import AccountSettings from '@/pages/Account/Account.tsx';
 import { Toaster } from './components/ui/toaster.tsx';
 import Bookings from '@/pages/Booking/Bookings.tsx';
+import AuthProvider from '@/context/AuthProvider/AuthProvider.tsx';
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
-    <Toaster />
+    <AuthProvider>
+      <RouterProvider router={router} />
+      <Toaster />
+    </AuthProvider>
   </StrictMode>
 );
