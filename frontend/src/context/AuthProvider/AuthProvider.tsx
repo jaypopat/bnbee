@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useState } from 'react';
+import {createContext, ReactNode, useEffect, useState} from 'react';
 import { getAuthToken, setAuthToken } from '@/api';
 import { getUser } from '@/api/user';
+import {Loader} from "lucide-react";
 
 interface User {
   id: number;
@@ -24,15 +25,42 @@ export const AuthContext = createContext<AuthContextT>({} as AuthContextT);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const initializeAuth = async () => {
+            const token = localStorage.getItem('authToken');
+            console.log('Token:', token);
+            if (token) {
+                setAuthToken(token);
+                try {
+                    const userData = await getUser();
+                    console.log('User data:', userData);
+                    setUser(userData);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    localStorage.removeItem('authToken');
+                }
+            }
+            else {
+                console.log('No token found');
+            }
+            setLoading(false);
+        };
+
+        initializeAuth();
+    }, []);
+
 
   // Returns whether the user could sign in
   const signIn = async (email: string, password: string) => {
     try {
       // Get the auth token from the auth endpoint.
       const token = await getAuthToken(email, password);
-      setAuthToken(token);
+      setAuthToken(token as string);
       // Get the user from the user endpoint using the auth token.
-      setUser(await getUser());
+        const userData = await getUser();
+      setUser(userData);
 
       return true;
     } catch (error) {
@@ -52,7 +80,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const user = await response.json();
-      console.log('User:', user);
       setUser(user);
 
       alert('User signed up successfully!');
@@ -74,6 +101,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     signOut,
     signUp,
   };
-
+    if (loading) {
+        return <div className="flex justify-center items-center"><Loader/></div>;
+    }
+    console.log('User:', user);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
