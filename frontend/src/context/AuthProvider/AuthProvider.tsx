@@ -2,20 +2,10 @@ import {createContext, ReactNode, useEffect, useState} from 'react';
 import { getAuthToken, setAuthToken } from '@/api';
 import { getUser } from '@/api/user';
 import {Loader} from "lucide-react";
-
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  createdAt: string;
-  ownerRating: number | null;
-  guestRating: number | null;
-  role: 'user' | 'admin';
-}
+import {UserProfile} from "@/types";
 
 interface AuthContextT {
-  user: User | null;
+  user: UserProfile | null;
   signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => void;
   signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<boolean>;
@@ -24,7 +14,7 @@ interface AuthContextT {
 export const AuthContext = createContext<AuthContextT>({} as AuthContextT);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
     useEffect(() => {
