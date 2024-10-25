@@ -8,10 +8,9 @@ import {Bell, Check, Eye, Lock, Pencil, User, X} from "lucide-react";
 import MainLayout from "@/components/MainLayout";
 import {useToast} from "@/hooks/use-toast";
 import useAuth from "@/context/AuthProvider";
-import api from "@/api";
-import {isAxiosError} from "axios";
+import {updateUser} from "@/api/user.ts";
 
-interface UserProfile {
+export interface UserProfile {
     id: number;
     firstName: string;
     lastName: string;
@@ -22,58 +21,43 @@ interface UserProfile {
     role: "user" | "admin";
 }
 
-
-
-async function updateUser(userId: number, data: UserProfile) {
-    try {
-        const response = await api.put(`/api/users/${userId}`, data);
-        console.log(response.data);
-        return response.data;
-    } catch (error) {
-        if (isAxiosError(error)) {
-            console.error('Error updating user:', {
-                status: error.response?.status,
-                data: error.response?.data,
-            });
-        } else {
-            console.error('Unexpected error:', error);
-        }
-        throw error;
-    }
-}
-
 export default function AccountSettings() {
+    const {user} = useAuth() as { user: UserProfile };
+
+
     const [activeSection, setActiveSection] = useState("Personal details");
     const [editMode, setEditMode] = useState<string | null>(null);
+    const [userState, setUserState] = useState<UserProfile>(user);
 
     type EditableFields = {[key: string]: string};
     const [editableFields, setEditableFields] = useState<EditableFields>({});
 
-    const {user} = useAuth() as { user: UserProfile };
     const {toast} = useToast();
 
     const handleEdit = (field: string) => {
         setEditMode(field);
         setEditableFields(prev => ({
             ...prev,
-            [field]: user[field as keyof UserProfile]?.toString() || ''
+            [field]: userState[field as keyof UserProfile]?.toString() || ''
         }));
     };
 
     const handleSave = async (field: string) => {
         try {
             const data = {
-                ...user,
+                ...userState,
                 [field]: editableFields[field as keyof UserProfile]
             };
             console.log(data);
-            await updateUser(user.id, data);
+            const updated_user_obj = await updateUser(userState.id, data);
+            setUserState(updated_user_obj);
 
             setEditMode(null);
             toast({
                 title: "Success",
                 description: `${field} updated successfully`,
             });
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             toast({
                 title: "Error",
@@ -131,7 +115,7 @@ export default function AccountSettings() {
         <>
             <Input
                 id={field}
-                value={user[field]?.toString() || ''}
+                value={userState[field]?.toString() || ''}
                 readOnly
                 className="mr-2"
             />
@@ -162,7 +146,7 @@ export default function AccountSettings() {
                             />
                             <Content
                                 activeSection={activeSection}
-                                user={user}
+                                user={userState}
                                 renderField={renderField}
                                 handleEdit={handleEdit}
                             />

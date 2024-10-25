@@ -3,11 +3,11 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import {Badge} from "@/components/ui/badge.tsx"
 import {CalendarDays, MapPin, User} from "lucide-react"
 import MainLayout from "@/components/MainLayout.tsx"
-import api from "@/api";
 import {useEffect, useState} from "react";
 import useAuth from "@/context/AuthProvider";
+import {getBookingsForUser} from "@/api/booking.ts";
 
-interface Booking {
+export interface Booking {
     bookerId: number
     propertyId: number
     propertyName: string
@@ -17,17 +17,6 @@ interface Booking {
     headcount: number,
     status: "pending" | "confirmed" | "cancelled" // booking dto status enum values
     imageUrl?: string // add to db schema or get the image from the property id implement when hooking up to backend
-}
-
-async function getBookingsForUser(userId: number): Promise<Booking[]> {
-    try {
-        const response = await api.get(`/api/bookings/users/${userId}`);
-        console.log(response.data);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching bookings:', error?.response?.status, error?.response?.data);
-        throw error;
-    }
 }
 
 export default function BookingsComponent() {
