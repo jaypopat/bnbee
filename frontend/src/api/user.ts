@@ -1,6 +1,6 @@
 import api from "./index";
 import {isAxiosError} from "axios";
-import {UserProfile} from "@/pages/Account/Account.tsx";
+import {UserProfile} from "@/types";
 
 async function getUser() {
     return api.get('/me')

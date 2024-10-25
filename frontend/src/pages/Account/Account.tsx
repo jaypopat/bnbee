@@ -9,17 +9,7 @@ import MainLayout from "@/components/MainLayout";
 import {useToast} from "@/hooks/use-toast";
 import useAuth from "@/context/AuthProvider";
 import {updateUser} from "@/api/user.ts";
-
-export interface UserProfile {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    createdAt: string;
-    guestRating: number | null;
-    ownerRating: number | null;
-    role: "user" | "admin";
-}
+import {UserProfile} from "@/types";
 
 export default function AccountSettings() {
     const {user} = useAuth() as { user: UserProfile };
@@ -198,7 +188,7 @@ const Content: React.FC<ContentProps> = ({activeSection, user, renderField, hand
         <h2 className="text-2xl font-semibold mb-6">{activeSection}</h2>
         {activeSection === "Personal details" ? (
             <>
-                <UserProfile user={user} handleEdit={handleEdit}/>
+                <UserProfileComponent user={user} handleEdit={handleEdit}/>
                 <div className="space-y-4">
                     {renderField("First Name", "firstName")}
                     {renderField("Last Name", "lastName")}
@@ -217,7 +207,7 @@ interface UserProfileProps {
     handleEdit: (field: string) => void;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({user, handleEdit}) => (
+const UserProfileComponent: React.FC<UserProfileProps> = ({user, handleEdit}) => (
     <div className="flex items-center mb-6">
         <Avatar className="h-20 w-20 mr-4">
             <AvatarImage src="/placeholder.svg" alt={`${user.firstName} ${user.lastName}`}/>

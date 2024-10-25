@@ -1,6 +1,6 @@
 import api from "@/api/index.ts";
-import { Booking } from "@/pages/Booking/Bookings.tsx";
 import { AxiosError } from 'axios';
+import {Booking} from "@/types";
 
 async function getBookingsForUser(userId: number): Promise<Booking[]> {
     try {

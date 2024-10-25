@@ -6,18 +6,9 @@ import MainLayout from "@/components/MainLayout.tsx"
 import {useEffect, useState} from "react";
 import useAuth from "@/context/AuthProvider";
 import {getBookingsForUser} from "@/api/booking.ts";
+import {Booking} from "@/types";
 
-export interface Booking {
-    bookerId: number
-    propertyId: number
-    propertyName: string
-    location: string
-    checkIn: string // localdate
-    checkOut: string // localdate
-    headcount: number,
-    status: "pending" | "confirmed" | "cancelled" // booking dto status enum values
-    imageUrl?: string // add to db schema or get the image from the property id implement when hooking up to backend
-}
+
 
 export default function BookingsComponent() {
 
@@ -32,8 +23,8 @@ export default function BookingsComponent() {
     const currentDate = new Date()
 
     const isUpcoming = (booking: Booking) => {
-        const checkInDate = new Date(booking.checkIn)
-        return checkInDate > currentDate && booking.status !== "cancelled"
+        const checkInDate = new Date(booking.startDate)
+        return checkInDate > currentDate && booking.status !== "CANCELLED"
     }
 
     const upcomingBookings = bookings.filter(isUpcoming)
@@ -51,7 +42,7 @@ export default function BookingsComponent() {
                     <TabsContent value="upcoming">
                         {upcomingBookings.length > 0 ? (
                             upcomingBookings.map((booking) => (
-                                <BookingCard key={`${booking.bookerId}-${booking.propertyId}`} booking={booking}
+                                <BookingCard key={`${booking.booker.id}-${booking.property.id}`} booking={booking}
                                              isUpcoming={true}/>
                             ))
                         ) : (
@@ -61,7 +52,7 @@ export default function BookingsComponent() {
                     <TabsContent value="past">
                         {pastBookings.length > 0 ? (
                             pastBookings.map((booking) => (
-                                <BookingCard key={`${booking.bookerId}-${booking.propertyId}`} booking={booking}
+                                <BookingCard key={`${booking.booker.id}-${booking.property.id}`} booking={booking}
                                              isUpcoming={false}/>
                             ))
                         ) : (
@@ -80,30 +71,31 @@ function BookingCard({booking, isUpcoming}: { booking: Booking; isUpcoming: bool
         return new Date(dateString).toLocaleDateString(undefined, options)
     }
 
+
     return (
         <Card className="mb-6">
             <CardHeader className="flex flex-row items-start space-y-0 gap-4">
-                <img
-                    src={booking.imageUrl}
-                    alt={booking.propertyName}
-                    width={100}
-                    height={100}
-                    className="rounded-md object-cover"
-                />
+                {/*<img*/}
+                {/*    src={booking.property.image}*/}
+                {/*    alt={booking.property.name}*/}
+                {/*    width={100}*/}
+                {/*    height={100}*/}
+                {/*    className="rounded-md object-cover"*/}
+                {/*/>*/}
                 <div className="flex-1">
-                    <CardTitle className="text-xl">{booking.propertyName}</CardTitle>
+                    <CardTitle className="text-xl">{booking.property.name}</CardTitle>
                     <CardDescription className="flex items-center mt-1">
                         <MapPin className="w-4 h-4 mr-1"/>
-                        {booking.location}
+                        {booking.property.address}
                     </CardDescription>
                 </div>
                 <Badge
                     variant={
                         isUpcoming
-                            ? booking.status === "pending"
+                            ? booking.status === "PENDING"
                                 ? "secondary"
                                 : "default"
-                            : booking.status === "cancelled"
+                            : booking.status === "CANCELLED"
                                 ? "destructive"
                                 : "secondary"
                     }
@@ -115,14 +107,14 @@ function BookingCard({booking, isUpcoming}: { booking: Booking; isUpcoming: bool
                 <div className="flex items-center text-sm text-muted-foreground mb-2">
                     <CalendarDays className="w-4 h-4 mr-2"/>
                     <span>
-            {formatDate(booking.checkIn)} - {formatDate(booking.checkOut)}
+            {formatDate(booking.startDate)} - {formatDate(booking.endDate)}
           </span>
                 </div>
             </CardContent>
             <CardFooter>
                 <div className="flex items-center text-sm text-muted-foreground">
                     <User className="w-4 h-4 mr-2"/>
-                    <span>Headcount: {booking.headcount}</span>
+                    <span>Headcount: {booking.headCount}</span>
                 </div>
             </CardFooter>
         </Card>
