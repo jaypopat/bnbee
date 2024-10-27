@@ -149,10 +149,10 @@ export default function AccountSettings() {
 }
 
 interface SidebarProps {
-    navItems: Array<{
+    navItems: {
         name: string;
         icon: React.FC;
-    }>;
+    }[];
     activeSection: string;
     setActiveSection: (section: string) => void;
 }

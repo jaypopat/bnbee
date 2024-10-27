@@ -2,7 +2,7 @@ import api from "./index";
 import {isAxiosError} from "axios";
 import {UserProfile} from "@/types";
 
-async function getUser() {
+async function getUser(): Promise<UserProfile> {
     return api.get('/me')
         .then(response => {
             return response.data
@@ -10,7 +10,7 @@ async function getUser() {
 }
 
 
-async function updateUser(userId: number, data: UserProfile) {
+async function updateUser(userId: number, data: UserProfile): Promise<UserProfile> {
     try {
         const updated_user = await api.put(`/api/users/${userId}`, data);
         console.log(updated_user.data);
