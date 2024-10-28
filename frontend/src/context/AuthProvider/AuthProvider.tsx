@@ -1,20 +1,11 @@
-import {createContext, ReactNode, useState} from 'react';
-import { getAuthToken, setAuthToken } from '@/api';
-import { getUser } from '@/api/user';
-
-interface User {
-    id: number,
-    firstName: string,
-    lastName: string,
-    email: string,
-    createdAt: string,
-    ownerRating: number | null,
-    guestRating: number | null,
-    role: 'user' | 'admin'
-}
+import {createContext, ReactNode, useEffect, useState} from 'react';
+import {getAuthToken, setAuthToken} from '@/api';
+import {getUser} from '@/api/user';
+import {Loader} from "lucide-react";
+import {UserProfile} from "@/types";
 
 interface AuthContextT {
-    user: User | null;
+    user: UserProfile | null;
     signIn: (email: string, password: string) => Promise<boolean>;
     signOut: () => void;
     signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<boolean>;
@@ -22,18 +13,43 @@ interface AuthContextT {
 
 export const AuthContext = createContext<AuthContextT>({} as AuthContextT);
 
-
 export default function AuthProvider({children}: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const initializeAuth = async () => {
+            const token = localStorage.getItem('authToken');
+            console.log('Token:', token);
+            if (token) {
+                setAuthToken(token);
+                try {
+                    const userData = await getUser();
+                    console.log('User data:', userData);
+                    setUser(userData);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    localStorage.removeItem('authToken');
+                }
+            } else {
+                console.log('No token found');
+            }
+            setLoading(false);
+        };
+
+        initializeAuth();
+    }, []);
+
 
     // Returns whether the user could sign in
     const signIn = async (email: string, password: string) => {
         try {
             // Get the auth token from the auth endpoint.
             const token = await getAuthToken(email, password);
-            setAuthToken(token);
+            setAuthToken(token as string);
             // Get the user from the user endpoint using the auth token.
-            setUser(await getUser());
+            const userData = await getUser();
+            setUser(userData);
 
             return true;
         } catch (error) {
@@ -53,18 +69,15 @@ export default function AuthProvider({children}: { children: ReactNode }) {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const user = await response.json();
-            console.log('User:', user);
             setUser(user);
 
-            alert('User signed up successfully!')
+            alert('User signed up successfully!');
             return true;
-
         } catch (error) {
             console.error('Error during sign-up:', error);
-            return false
+            return false;
         }
-    }
-
+    };
 
     const signOut = async () => {
         setUser(null);
@@ -75,12 +88,11 @@ export default function AuthProvider({children}: { children: ReactNode }) {
         user,
         signIn,
         signOut,
-        signUp
+        signUp,
     };
-
-    return (
-        <AuthContext.Provider value={value}>
-            {children}
-        </AuthContext.Provider>
-    );
+    if (loading) {
+        return <div className="flex justify-center items-center"><Loader/></div>;
+    }
+    console.log('User:', user);
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

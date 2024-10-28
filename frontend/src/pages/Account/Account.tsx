@@ -1,205 +1,223 @@
-import React, { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { Card, CardContent } from "@/components/ui/card.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Label } from "@/components/ui/label.tsx";
-import { Pencil, User, Lock, Eye, Bell, Check, X } from "lucide-react";
-import MainLayout from "@/components/MainLayout.tsx";
-import { useToast } from "@/hooks/use-toast.ts";
-
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  dateOfBirth: string;
-  nationality: string;
-  gender: string;
-}
-
-const sampleUser: User = {
-  id: 1,
-  firstName: "Joanna",
-  lastName: "Burpy",
-  email: "joanna.burpy@example.com",
-  phoneNumber: "+353 123 456 7890",
-  dateOfBirth: "1990-01-01",
-  nationality: "Irish",
-  gender: "Female"
-};
+import React, {useState} from "react";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Bell, Check, Eye, Lock, Pencil, User, X} from "lucide-react";
+import MainLayout from "@/components/MainLayout";
+import {useToast} from "@/hooks/use-toast";
+import useAuth from "@/context/AuthProvider";
+import {updateUser} from "@/api/user.ts";
+import {UserProfile} from "@/types";
 
 export default function AccountSettings() {
-  const [activeSection, setActiveSection] = useState("Personal details");
-  const [editMode, setEditMode] = useState<string | null>(null);
-  const [user, setUser] = useState<User>(sampleUser);
+    const {user} = useAuth() as { user: UserProfile };
 
-  const { toast } = useToast();
 
-  const handleEdit = (field: string) => setEditMode(field);
+    const [activeSection, setActiveSection] = useState("Personal details");
+    const [editMode, setEditMode] = useState<string | null>(null);
+    const [userState, setUserState] = useState<UserProfile>(user);
 
-  const handleSave = (field: string) => {
-    setEditMode(null);
-    // Make API call to update user details here
-    toast({
-      title: "Success",
-      description: `${field} updated successfully`,
-    });
-  };
+    type EditableFields = {[key: string]: string};
+    const [editableFields, setEditableFields] = useState<EditableFields>({});
 
-  const handleCancel = () => {
-    setEditMode(null);
-    setUser(sampleUser);
-  };
+    const {toast} = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUser(prevUser => ({ ...prevUser, [name]: value }));
-  };
+    const handleEdit = (field: string) => {
+        setEditMode(field);
+        setEditableFields(prev => ({
+            ...prev,
+            [field]: userState[field as keyof UserProfile]?.toString() || ''
+        }));
+    };
 
-  const renderField = (label: string, field: keyof User) => (
-    <div>
-      <Label htmlFor={field}>{label}</Label>
-      <div className="flex items-center">
-        {editMode === field ? (
-          renderEditableField(field)
-        ) : (
-          renderReadOnlyField(field)
-        )}
-      </div>
-    </div>
-  );
+    const handleSave = async (field: string) => {
+        try {
+            const data = {
+                ...userState,
+                [field]: editableFields[field as keyof UserProfile]
+            };
+            console.log(data);
+            const updated_user_obj = await updateUser(userState.id, data);
+            setUserState(updated_user_obj);
 
-  const renderEditableField = (field: keyof User) => (
-    <>
-      <Input
-        id={field}
-        name={field}
-        value={user[field]}
-        onChange={handleChange}
-        className="mr-2"
-      />
-      <Button variant="ghost" size="icon" onClick={() => handleSave(field)}>
-        <Check className="h-4 w-4" />
-      </Button>
-      <Button variant="ghost" size="icon" onClick={handleCancel}>
-        <X className="h-4 w-4" />
-      </Button>
-    </>
-  );
+            setEditMode(null);
+            toast({
+                title: "Success",
+                description: `${field} updated successfully`,
+            });
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to update field",
+                variant: "destructive",
+            });
+        }
+    };
 
-  const renderReadOnlyField = (field: keyof User) => (
-    <>
-      <Input id={field} value={user[field]} readOnly className="mr-2" />
-      <Button variant="ghost" size="icon" onClick={() => handleEdit(field)}>
-        <Pencil className="h-4 w-4" />
-      </Button>
-    </>
-  );
+    const handleCancel = () => {
+        setEditMode(null);
+        setEditableFields({});
+    };
 
-  const navItems = [
-    { name: "Personal details", icon: User },
-    { name: "Login & Security", icon: Lock },
-    { name: "Privacy & Sharing", icon: Eye },
-    { name: "Notifications", icon: Bell },
-  ];
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target;
+        setEditableFields(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
-  return (
-    <MainLayout>
-      <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">Account</h1>
-        <Card>
-          <CardContent className="p-0">
-            <div className="flex flex-col md:flex-row">
-              <Sidebar
-                navItems={navItems}
-                activeSection={activeSection}
-                setActiveSection={setActiveSection}
-              />
-              <Content
-                activeSection={activeSection}
-                user={user}
-                renderField={renderField}
-                handleEdit={handleEdit}
-              />
+    const renderField = (label: string, field: keyof UserProfile) => (
+        <div key={field}>
+            <Label htmlFor={field}>{label}</Label>
+            <div className="flex items-center">
+                {editMode === field ? (
+                    renderEditableField(field)
+                ) : (
+                    renderReadOnlyField(field)
+                )}
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    </MainLayout>
-  );
+        </div>
+    );
+
+    const renderEditableField = (field: keyof UserProfile) => (
+        <>
+            <Input
+                id={field}
+                name={field}
+                value={editableFields[field] || ''}
+                onChange={handleChange}
+                className="mr-2"
+            />
+            <Button variant="ghost" size="icon" onClick={() => handleSave(field)}>
+                <Check className="h-4 w-4"/>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleCancel}>
+                <X className="h-4 w-4"/>
+            </Button>
+        </>
+    );
+
+    const renderReadOnlyField = (field: keyof UserProfile) => (
+        <>
+            <Input
+                id={field}
+                value={userState[field]?.toString() || ''}
+                readOnly
+                className="mr-2"
+            />
+            <Button variant="ghost" size="icon" onClick={() => handleEdit(field)}>
+                <Pencil className="h-4 w-4"/>
+            </Button>
+        </>
+    );
+
+    const navItems = [
+        {name: "Personal details", icon: User},
+        {name: "Login & Security", icon: Lock},
+        {name: "Privacy & Sharing", icon: Eye},
+        {name: "Notifications", icon: Bell},
+    ];
+
+    return (
+        <MainLayout>
+            <div className="container mx-auto p-6">
+                <h1 className="text-3xl font-bold mb-6">Account</h1>
+                <Card>
+                    <CardContent className="p-0">
+                        <div className="flex flex-col md:flex-row">
+                            <Sidebar
+                                navItems={navItems}
+                                activeSection={activeSection}
+                                setActiveSection={setActiveSection}
+                            />
+                            <Content
+                                activeSection={activeSection}
+                                user={userState}
+                                renderField={renderField}
+                                handleEdit={handleEdit}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </MainLayout>
+    );
+}
+
+interface SidebarProps {
+    navItems: {
+        name: string;
+        icon: React.FC;
+    }[];
+    activeSection: string;
+    setActiveSection: (section: string) => void;
 }
 
 
-const Sidebar = ({ navItems, activeSection, setActiveSection }:{
-  navItems: { name: string; icon: React.FC }[];
-  activeSection: string;
-  setActiveSection: (section: string) => void;
-
-}) => (
-  <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r">
-    <nav className="flex flex-col">
-      {navItems.map((item) => (
-        <Button
-          key={item.name}
-          variant={activeSection === item.name ? "secondary" : "ghost"}
-          className="justify-start rounded-none h-14"
-          onClick={() => setActiveSection(item.name)}
-        >
-          <item.icon className="mr-2 h-4 w-4" />
-          {item.name}
-        </Button>
-      ))}
-    </nav>
-  </div>
-);
-
-const Content = ({ activeSection, user, renderField, handleEdit }:{
-  activeSection: string;
-  user: User;
-  renderField: (label: string, field: keyof User) => JSX.Element;
-  handleEdit: (field: string) => void;
-}) => (
-  <div className="w-full md:w-2/3 p-6">
-    <h2 className="text-2xl font-semibold mb-6">{activeSection}</h2>
-    {activeSection === "Personal details" ? (
-      <>
-        <UserProfile user={user} handleEdit={handleEdit} />
-        <div className="space-y-4">
-          {renderField("First Name", "firstName")}
-          {renderField("Last Name", "lastName")}
-          {renderField("Email Address", "email")}
-          {renderField("Phone Number", "phoneNumber")}
-          {renderField("Date of Birth", "dateOfBirth")}
-          {renderField("Nationality", "nationality")}
-          {renderField("Gender", "gender")}
-        </div>
-      </>
-    )
-      // change this to an if and render fields for other sections
-      : (
-      <p>Content for {activeSection} goes here.</p>
-    )}
-  </div>
-);
-
-const UserProfile = ({ user, handleEdit }:{
-  user: User;
-  handleEdit: (field: string) => void;
-
-}) => (
-  <div className="flex items-center mb-6">
-    <Avatar className="h-20 w-20 mr-4">
-      <AvatarImage src="/placeholder.svg" alt={`${user.firstName} ${user.lastName}`} />
-      <AvatarFallback>{user.firstName[0]}{user.lastName[0]}</AvatarFallback>
-    </Avatar>
-    <div>
-      <h3 className="text-xl font-semibold">{`${user.firstName} ${user.lastName}`}</h3>
-      <p className="text-sm text-gray-500">Guest</p>
+const Sidebar: React.FC<SidebarProps> = ({navItems, activeSection, setActiveSection}) => (
+    <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r">
+        <nav className="flex flex-col">
+            {navItems.map((item) => (
+                <Button
+                    key={item.name}
+                    variant={activeSection === item.name ? "secondary" : "ghost"}
+                    className="justify-start rounded-none h-14"
+                    onClick={() => setActiveSection(item.name)}
+                >
+                    <item.icon className="mr-2 h-4 w-4"/>
+                    {item.name}
+                </Button>
+            ))}
+        </nav>
     </div>
-    <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleEdit('firstName')}>
-      <Pencil className="h-4 w-4" />
-    </Button>
-  </div>
+);
+
+interface ContentProps {
+    activeSection: string;
+    user: UserProfile;
+    renderField: (label: string, field: keyof UserProfile) => JSX.Element;
+    handleEdit: (field: string) => void;
+}
+
+const Content: React.FC<ContentProps> = ({activeSection, user, renderField, handleEdit}) => (
+    <div className="w-full md:w-2/3 p-6">
+        <h2 className="text-2xl font-semibold mb-6">{activeSection}</h2>
+        {activeSection === "Personal details" ? (
+            <>
+                <UserProfileComponent user={user} handleEdit={handleEdit}/>
+                <div className="space-y-4">
+                    {renderField("First Name", "firstName")}
+                    {renderField("Last Name", "lastName")}
+                    {renderField("Email Address", "email")}
+
+                </div>
+            </>
+        ) : (
+            <p>Content for {activeSection} goes here.</p>
+        )}
+    </div>
+);
+
+interface UserProfileProps {
+    user: UserProfile;
+    handleEdit: (field: string) => void;
+}
+
+const UserProfileComponent: React.FC<UserProfileProps> = ({user, handleEdit}) => (
+    <div className="flex items-center mb-6">
+        <Avatar className="h-20 w-20 mr-4">
+            <AvatarImage src="/placeholder.svg" alt={`${user.firstName} ${user.lastName}`}/>
+            <AvatarFallback>{user.firstName[0]}{user.lastName[0]}</AvatarFallback>
+        </Avatar>
+        <div>
+            <h3 className="text-xl font-semibold">{`${user.firstName} ${user.lastName}`}</h3>
+        </div>
+        <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleEdit('firstName')}>
+            <Pencil className="h-4 w-4"/>
+        </Button>
+    </div>
 );
