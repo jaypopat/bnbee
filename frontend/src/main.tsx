@@ -9,6 +9,7 @@ import {Toaster} from './components/ui/toaster.tsx';
 import Bookings from '@/pages/Booking/Bookings.tsx';
 import AuthProvider from '@/context/AuthProvider/AuthProvider.tsx';
 import ProtectedRoute from '@/components/ProtectedRoute.tsx';
+import SearchPage from '@/pages/Search/SearchPage.tsx';
 
 const router = createBrowserRouter([
     {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
                 <AccountSettings/>
             </ProtectedRoute>
         ),
+    },
+    {
+      path: 'search',
+      element: <SearchPage />
     },
     {
         path: 'bookings',
