@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { getAllProperties } from '@/api/property.ts';
 import { Property } from '@/types';
+import { Link } from 'react-router-dom';
 
 const searchFacilities = [
   {
@@ -140,7 +141,7 @@ export default function SearchPage() {
 
 const SearchResultCard = (props: Property) => {
   return (
-    <div className="w-full flex gap-2 rounded-3xl shadow-lg relative my-4 border border-gray-200">
+    <Link to={`/property/${props.id}`} className="w-full flex gap-2 rounded-3xl shadow-lg relative my-4 border border-gray-200">
       <Badge className="absolute right-0 top-0 px-2 text-sm m-3">{props.rating || 0}/10</Badge>
       <div className="basis-1/3">
         <img
@@ -175,7 +176,7 @@ const SearchResultCard = (props: Property) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
