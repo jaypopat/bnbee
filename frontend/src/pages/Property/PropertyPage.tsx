@@ -1,6 +1,6 @@
 import MainLayout from '@/components/MainLayout.tsx';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useLoaderData } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { ArrowRight, Heart, MapIcon, MapPin, Users, X } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
 import { Badge } from '@/components/ui/badge.tsx';
@@ -11,62 +11,15 @@ import { DatePickerWithRange } from '@/components/DateRangePicker.tsx';
 import { Facilities } from '@/assets/Facilities.tsx';
 import AutoScroll from 'embla-carousel-auto-scroll';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar.tsx';
-
-const description =
-  'Hyatt Place NYC Chelsea is a hotel located in New York City. It features a fitness centre, a shared lounge, a terrace and a restaurant. The 4-star hotel offers free Wi-Fi, a 24-hour front desk and a business centre. A bar is also available.' +
-  '\n' +
-  'At Hyatt Place NYC Chelsea, each air-conditioned room features a flat-screen cable TV and a safe. Other amenities include a seating area and a private bathroom with a shower, free toiletries and a hairdryer. A refrigerator is at the disposal of all guests.\n' +
-  '\n' +
-  'A breakfast buffet is available daily.\n' +
-  '\n' +
-  'Popular atractions such as Penn Station, High Line Park and Macy’s Department Store are close to Hyatt Place NYC Chelsea. LaGuardia Airport is 13 kilometers away.';
+import { Property, PropertyReview } from '@/types';
+import { getPropertyReviews } from '@/api/property.ts';
 
 const facilities = ['breakfast', 'freewifi', 'petsallowed', 'airconditioner', 'gym', 'view'];
 
-const reviews: PropertyReview[] = [
-  {
-    id: 1,
-    reviewerName: 'Alice Smith',
-    bookingStartDate: new Date('2023-08-10'),
-    bookingEndDate: new Date('2023-08-15'),
-    message: 'The property was clean, and the location was excellent. Would definitely stay again!',
-    score: 5,
-  },
-  {
-    id: 2,
-    reviewerName: 'John Doe',
-    bookingStartDate: new Date('2023-07-01'),
-    bookingEndDate: new Date('2023-07-05'),
-    message: 'Good stay overall, but the Wi-Fi was unreliable. Great host though!',
-    score: 4,
-  },
-  {
-    id: 3,
-    reviewerName: 'Sophia Liu',
-    bookingStartDate: new Date('2023-09-12'),
-    bookingEndDate: new Date('2023-09-16'),
-    message: 'Amazing views and cozy interior. However, the kitchen lacked some basic utensils.',
-    score: 4,
-  },
-  {
-    id: 4,
-    reviewerName: 'David Martinez',
-    bookingStartDate: new Date('2023-10-05'),
-    bookingEndDate: new Date('2023-10-10'),
-    message: 'Not quite what I expected. The photos made the place look bigger than it is.',
-    score: 3,
-  },
-  {
-    id: 5,
-    reviewerName: 'Emma Brown',
-    bookingStartDate: new Date('2023-11-20'),
-    bookingEndDate: new Date('2023-11-25'),
-    message: 'Perfect place for a relaxing getaway! The host was very accommodating.',
-    score: 5,
-  },
-];
-
 export default function PropertyPage() {
+  const data = useLoaderData() as Property;
+  console.log(data);
+
   return (
     <MainLayout>
       {/* Search box */}
@@ -101,9 +54,9 @@ export default function PropertyPage() {
       <SectionLinks />
       <div className="flex align-bottom justify-between">
         <div>
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Hyatt Place NYC Chelsea</h1>
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">{data.name}</h1>
           <h3 className="scroll-m-20 text-2xl font-semibold text-gray-400 " style={{ marginTop: 10 }}>
-            140 West 24th Street, Chelsea, New York, NY 10011, USA
+            {data.address}
           </h3>
         </div>
         <div className="flex items-end gap-4">
@@ -159,7 +112,7 @@ export default function PropertyPage() {
 
       {/*  Description */}
       <div className="w-full flex gap-10">
-        <div className="basis-2/3">{description}</div>
+        <div className="basis-2/3">{data.description}</div>
         <div className="text-center bg-primary rounded-3xl text-white px-16 py-10 max-h-96">
           <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0">Create an account to get 20% off.</h2>
           <p className="leading-7 mt-3 mb-10">Join our loyalty programme</p>
@@ -171,11 +124,11 @@ export default function PropertyPage() {
       <div className="w-full">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-2">Reviews</h1>
         <div className="flex items-center gap-4">
-          <Badge className="text-2xl px-5 py-1">8/10</Badge>
+          <Badge className="text-2xl px-5 py-1">{data.rating || 0}/10</Badge>
           <span className="text-gray-400">from 174 reviews</span>
         </div>
 
-        <ReviewsCarousel />
+        <ReviewsCarousel propertyId={data.id} />
         <div className="w-full text-right">
           <Button variant="ghost">
             All reviews
@@ -210,7 +163,13 @@ const SectionLinks = () => {
   );
 };
 
-const ReviewsCarousel = () => {
+const ReviewsCarousel = ({ propertyId }: { propertyId: number }) => {
+  const [reviews, setReviews] = useState<PropertyReview[]>([]);
+
+  useEffect(() => {
+    getPropertyReviews(propertyId.toString()).then(data => setReviews(data));
+  }, []);
+
   return (
     <Carousel
       opts={{
@@ -231,15 +190,6 @@ const ReviewsCarousel = () => {
   );
 };
 
-interface PropertyReview {
-  id: number;
-  reviewerName: string;
-  bookingStartDate: Date;
-  bookingEndDate: Date;
-  message: string;
-  score: number;
-}
-
 function formatDateToDayMonth(date: Date) {
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
@@ -253,12 +203,12 @@ const ReviewsCarouselCard = (props: PropertyReview) => {
         <div className="flex items-start">
           <Avatar className="mr-2">
             {/* Add Profile Icon here */}
-            <AvatarFallback>{props.reviewerName.split(' ').map(name => name.at(0))}</AvatarFallback>
+            <AvatarFallback>{props.booking.booker.firstName.split(' ').map(name => name.at(0))}</AvatarFallback>
           </Avatar>
           <div>
-            {props.reviewerName}
+            {props.booking.booker.firstName + ' ' + props.booking.booker.lastName}
             <div className="flex text-gray-400">
-              {formatDateToDayMonth(props.bookingStartDate)} - {formatDateToDayMonth(props.bookingEndDate)}
+              {formatDateToDayMonth(new Date(props.booking.startDate))} - {formatDateToDayMonth(new Date(props.booking.endDate))}
             </div>
           </div>
         </div>
