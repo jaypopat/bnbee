@@ -49,9 +49,15 @@ export default function SearchPage() {
               <div className="text-lg font-semibold">Your budget per night</div>
               <div className="text-sm text-gray-400 mb-1">Between:</div>
               <div className="flex gap-2 items-center">
-                <Input className="bg-transparent h-8" placeholder="200.00" startIcon={DollarSign} />
+                <div className="flex items-center">
+                  <DollarSign className="text-sm text-gray-400" />
+                  <Input className="bg-transparent h-8 pl-1" placeholder="200.00" />
+                </div>
                 <span className="text-gray-400">and</span>
-                <Input className="bg-transparent h-8" placeholder="600.00" startIcon={DollarSign} />
+                <div className="flex items-center">
+                  <DollarSign className="text-sm text-gray-400" />
+                  <Input className="bg-transparent h-8 pl-1" placeholder="600.00" />
+                </div>
               </div>
             </div>
           </div>
